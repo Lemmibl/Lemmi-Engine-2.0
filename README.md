@@ -7,10 +7,11 @@ Credits:
 =============
 
 I use the following libraries:
-* CEGUI     -> http://cegui.org.uk/
+* CEGUI     -> http://www.cegui.org.uk/
 * GLFW      -> http://www.glfw.org/
 * Libconfig -> http://www.hyperrealm.com/libconfig/
 * Visual Leak Detector (Only while debugging, of course) -> https://vld.codeplex.com/
+* BulletPhysics -> http://www.bulletphysics.org/
 
 I also use code from the following people:
 * Christian Schladetsch's Event code -> http://www.altdevblogaday.com/2011/10/30/c-events/
