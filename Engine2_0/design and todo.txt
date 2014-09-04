@@ -1,0 +1,7 @@
+TODO:
+* Make a logs folder and configure CEGUI to write logs to that folder. Also set up a separate log file for OUR stuff as opposed to printing everything to cegui.log
+* Recompile CEGUI to use static libraries...?
+* Set up git project again.......
+
+Design...?:
+* Regarding the job queue manager: probably only be used in .... the actual game? Or not? Separate UI thread?

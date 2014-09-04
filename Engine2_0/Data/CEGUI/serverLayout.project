@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project CEGUIDefaultResolution="1280x720" CEGUIVersion="1.0" baseDirectory="." fontsPath="fonts" imagesetsPath="imagesets" layoutsPath="layouts" looknfeelsPath="looknfeel" schemesPath="schemes" version="CEED Project 1" xmlSchemasPath="xml_schemas">
+    <Items>
+        <Item path="layouts/CustomLayouts/ClientSidebar.layout" type="file" />
+        <Item path="layouts/CustomLayouts/ServerSidebar.layout" type="file" />
+        <Item path="layouts/customLayouts/serverLayout.layout" type="file" />
+        <Item path="layouts/CustomLayouts/ClientLayout.layout" type="file" />
+        <Item path="layouts/CustomLayouts/Console.layout" type="file" />
+        <Item path="layouts/CustomLayouts/MainMenu.layout" type="file" />
+    </Items>
+</Project>

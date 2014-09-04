@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{88CE257C-895C-44BC-AEC5-4A21638CBA28}</ProjectGuid>
+    <RootNamespace>Engine20</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>../Engine2_0/Libraries/LibConfig;../Engine2_0/Libraries/GLFW/include;../Engine2_0/Libraries/VisualLeakDetector/include;../Engine2_0/Libraries/CEGUI/include;$(IncludePath)</IncludePath>
+    <LibraryPath>../Engine2_0/Libraries/CEGUI/lib;../Engine2_0/Libraries/GLFW/Debug;../Engine2_0/Libraries/LibConfig;../Engine2_0/Libraries/VisualLeakDetector/lib/win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAsManaged>false</CompileAsManaged>
+      <MinimalRebuild>false</MinimalRebuild>
+      <PreprocessorDefinitions>NOMINMAX;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;CEGUIBase-0_d.lib;CEGUICoreWindowRendererSet_d.lib;CEGUICommonDialogs-0_d.lib;CEGUIOpenGLRenderer-0_d.lib;glfw3.lib;libconfig++.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="GUI\CEGUIMessageBox.cpp" />
+    <ClCompile Include="GUI\CEGUIWrapper.cpp" />
+    <ClCompile Include="GUI\FormattedListboxTextItem.cpp" />
+    <ClCompile Include="GUI\GameConsoleWindow.cpp" />
+    <ClCompile Include="Core systems\InputManager.cpp" />
+    <ClCompile Include="Libraries\TinyThread\tinythread.cpp" />
+    <ClCompile Include="Screens\OptionsScreen.cpp" />
+    <ClCompile Include="Screens\GameplayScreen.cpp" />
+    <ClCompile Include="Core systems\JobQueueManager.cpp" />
+    <ClCompile Include="Core systems\EngineCore.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Screens\ScreenBaseClass.cpp" />
+    <ClCompile Include="Screens\MainMenuScreen.cpp" />
+    <ClCompile Include="Screens\ScreenManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GUI\CEGUIMessageBox.h" />
+    <ClInclude Include="GUI\CEGUIWrapper.h" />
+    <ClInclude Include="GUI\FormattedListboxTextItem.h" />
+    <ClInclude Include="GUI\GameConsoleWindow.h" />
+    <ClInclude Include="GUI\TextMessage.h" />
+    <ClInclude Include="Core systems\InputManager.h" />
+    <ClInclude Include="Libraries\Events\SchladetschEvents.h" />
+    <ClInclude Include="Libraries\TinyThread\fast_mutex.h" />
+    <ClInclude Include="Libraries\TinyThread\ThreadsafeQueue.h" />
+    <ClInclude Include="Libraries\TinyThread\tinythread.h" />
+    <ClInclude Include="Screens\OptionsScreen.h" />
+    <ClInclude Include="Screens\GameplayScreen.h" />
+    <ClInclude Include="Core systems\JobQueueManager.h" />
+    <ClInclude Include="Core systems\EngineCore.h" />
+    <ClInclude Include="Screens\ScreenBaseClass.h" />
+    <ClInclude Include="Screens\MainMenuScreen.h" />
+    <ClInclude Include="Screens\ScreenStates.h" />
+    <ClInclude Include="Screens\ScreenManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="design and todo.txt" />
+    <None Include="Data\settings.cfg" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

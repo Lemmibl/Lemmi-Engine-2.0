@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+	<Window type="TaharezLook/FrameWindow" name="Console" >
+		<Property name="Area" value="{{0.42,0},{0.02,0},{0.97,10},{0.92,20}}" />
+		<Property name="MaxSize" value="{{1,0},{1,0}}" />
+		<Property name="MinSize" value="{{0.2,0},{0.2,0}}" />
+		<Property name="AlwaysOnTop" value="True" />
+		<Property name="DragMovingEnabled" value="False" />
+		<Property name="RollUpEnabled" value="False" />
+		<Property name="CloseButtonEnabled" value="False" />
+		<Window type="TaharezLook/Button" name="Submit" >
+			<Property name="ID" value="1" />
+			<Property name="Area" value="{{0,-7},{0,-7},{0.25,-7},{0,20}}" />
+			<Property name="Text" value="Send" />
+			<Property name="MaxSize" value="{{1,0},{1,0}}" />
+			<Property name="VerticalAlignment" value="Bottom" />
+			<Property name="HorizontalAlignment" value="Right" />
+		</Window>
+		<Window type="TaharezLook/Editbox" name="Editbox" >
+			<Property name="ID" value="2" />
+			<Property name="Area" value="{{0,7},{0,-7},{0.75,-14},{0,20}}" />
+			<Property name="MaxSize" value="{{1,0},{1,0}}" />
+			<Property name="VerticalAlignment" value="Bottom" />
+		</Window>
+		<Window type="TaharezLook/Listbox" name="History" >
+			<Property name="ID" value="3" />
+			<Property name="Area" value="{{0,7},{0,7},{1,-7},{1,-40}}" />
+			<Property name="MaxSize" value="{{1,0},{1,0}}" />
+		</Window>
+	</Window>
+</GUILayout>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout version="4" >
+	<Window type="TaharezLook/GroupBox" name="GroupBox" >
+		<Property name="Area" value="{{0,-5},{0,-5},{1.05,0},{1.05,0}}" />
+		<Property name="MaxSize" value="{{4,0},{4,0}}" />
+		<Property name="VerticalAlignment" value="Centre" />
+		<Property name="HorizontalAlignment" value="Centre" />
+		<Window type="TaharezLook/FrameWindow" name="A background" >
+			<Property name="Area" value="{{0,-25},{0,-25},{1.0,25},{1.0,25}}" />
+			<Property name="Text" value="Main Menu" />
+			<Property name="PixelAligned" value="False" />
+			<Property name="RollUpEnabled" value="False" />
+			<Property name="TitlebarEnabled" value="False" />
+			<Property name="ClientAreaColour" value="tl:FF4B7DC8 tr:FF4B7DC8 bl:FF64AF4B br:FF64AF4B" />
+			<Property name="DragMovingEnabled" value="False" />
+			<Property name="CloseButtonEnabled" value="False" />
+			<Property name="RiseOnClickEnabled" value="False" />
+			<Property name="TextParsingEnabled" value="False" />
+			<Property name="WantsMultiClickEvents" value="False" />
+			<AutoWindow namePath="__auto_titlebar__" >
+				<Property name="DraggingEnabled" value="False" />
+			</AutoWindow>
+		</Window>
+		<Window type="AlfiskoSkin/WhiteButton" name="Start Game" >
+			<Property name="Area" value="{{0,0},{0,-150},{0,200},{0,-90}}" />
+			<Property name="Font" value="DejaVuSans-12" />
+			<Property name="Text" value="Start Game" />
+			<Property name="AlwaysOnTop" value="True" />
+			<Property name="ClippedByParent" value="False" />
+			<Property name="VerticalAlignment" value="Centre" />
+			<Property name="HorizontalAlignment" value="Centre" />
+			<Property name="AutoRenderingSurface" value="True" />
+			<Property name="WantsMultiClickEvents" value="False" />
+		</Window>
+		<Window type="AlfiskoSkin/WhiteButton" name="Options" >
+			<Property name="Area" value="{{0,0},{0,-50},{0,200},{0,10}}" />
+			<Property name="Font" value="DejaVuSans-12" />
+			<Property name="Text" value="Options" />
+			<Property name="AlwaysOnTop" value="True" />
+			<Property name="ClippedByParent" value="False" />
+			<Property name="VerticalAlignment" value="Centre" />
+			<Property name="HorizontalAlignment" value="Centre" />
+			<Property name="AutoRenderingSurface" value="True" />
+			<Property name="WantsMultiClickEvents" value="False" />
+		</Window>
+		<Window type="AlfiskoSkin/WhiteButton" name="Exit" >
+			<Property name="Area" value="{{0,0},{0,50},{0,200},{0,110}}" />
+			<Property name="Font" value="DejaVuSans-12" />
+			<Property name="Text" value="Exit" />
+			<Property name="AlwaysOnTop" value="True" />
+			<Property name="ClippedByParent" value="False" />
+			<Property name="VerticalAlignment" value="Centre" />
+			<Property name="HorizontalAlignment" value="Centre" />
+			<Property name="AutoRenderingSurface" value="True" />
+			<Property name="WantsMultiClickEvents" value="False" />
+		</Window>
+	</Window>
+</GUILayout>
