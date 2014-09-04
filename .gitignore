@@ -7,15 +7,31 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
 
 # Compiled Static libraries
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
 *.out
 *.app
+
+# Stuff I dont want
+
+*.ilk
+*.pdb
+*.exp
+*.tlog
+*.idb
+*.manifest
+*.lastbuildstate
+*.cache
+*.ipch
+*.sdf
+*.opensdf
+*.res
+*.unsuccessfulbuild
+*.log
+*.suo
