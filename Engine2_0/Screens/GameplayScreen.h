@@ -1,6 +1,10 @@
 #pragma once
 #include "ScreenBaseClass.h"
 
+#include "../Game/Game.h"
+#include "CEGUI/CEGUI.h"
+#include <GLFW/glfw3.h>
+
 class GameplayScreen : public ScreenBaseClass
 {
 public:
@@ -10,8 +14,13 @@ public:
 	virtual bool Enter();
 	virtual void Exit();
 
-	virtual bool Update( double deltaTime );
-	virtual bool Render( double deltaTime );
+	bool Initialize();
 
+	virtual bool Update(double deltaTime);
+	virtual bool Render(double deltaTime);
+
+private:
+	GLFWwindow* glfwWindow;
+	Game currentGame;
 };
 

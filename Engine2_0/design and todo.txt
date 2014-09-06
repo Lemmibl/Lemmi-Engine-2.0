@@ -5,3 +5,57 @@ TODO:
 
 Design...?:
 * Regarding the job queue manager: probably only be used in .... the actual game? Or not? Separate UI thread?
+
+
+* This is probably how the actual game is set up:
+
+* GameplayScreen owns:
+	Game.
+	"New game menu" ?
+		-> This menu will let you configure things before starting the game. So you can select like, terrain type, vegetation levels and shit.
+
+	Game owns:
+		Scene.
+
+		TerrainManager.
+			-> TerrainManager creates part of scene.
+		GameRenderer.
+			-> GameRenderer draws Scene.
+		Physics.
+			-> Physics updates Scene.
+		AI.
+			-> AI processes upon Scene.
+
+		Etc.
+
+			Scene contains:
+				Entities!
+				Many different types of entities.. Maybe?
+				Or just........ Pointers.. Handles?
+
+* How to approach setting up the rendering:
+	- Maybe look at how other renderers do it? Render queue? Sorting by flags? Using those sexy sexy dod-arrays?
+		-> SCENE???? Use a Scene?
+
+	//http://realtimecollisiondetection.net/blog/?p=86
+	//http://www.gamedev.net/topic/641759-sorting-draw-calls-when-stages-are-executed-multiple-times/
+	//http://lspiroengine.com/?p=96
+
+	* First setup the Shadow pass -> Gbuffer -> Light and post processing -> Compose
+	* Then skysphere
+	* Then... terrain? Marching cubes. Try to clean up terrain generator.
+
+
+Maybe being able to set up a vector of "Render Passes". Where you can sort them in order and specify what they're named and what key they have, what shader they should render etc.
+
+
+* For culling use bulletphysics built in: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=3896&hilit=culling
+
+struct RenderPass
+{
+	enum PassName
+	string PassNameDebug
+	vector<Shader> shaders //stored in order of execution I guess? 0 being first
+	long flags //this is what we'll match objects against, I guess? does this need to be here?
+	std::function renderpassfunction?
+}

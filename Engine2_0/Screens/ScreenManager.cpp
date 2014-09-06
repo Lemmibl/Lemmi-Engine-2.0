@@ -50,9 +50,12 @@ bool ScreenManager::Update()
 	glfwTime = glfwGetTime();
 
 	//I've also made sure to have the option to let the individual states flag that the program should shut down
-	if(!currentScreen->Update(glfwTime))
+	if(currentScreen->IsActive())
 	{
-		return false;
+		if(!currentScreen->Update(glfwTime))
+		{
+			return false;
+		}
 	}
 
 	return true;
@@ -91,12 +94,14 @@ void ScreenManager::SwitchState(ScreenStates::State newScreenEnum)
 		//Aaaand... Enter new screen
 		if(!currentScreen->Enter())
 		{
+			//FAILURE
 			currentScreen = nullptr;
 			running = false;
 			return;
 		}
 		else
 		{
+			//SUCCESS
 			running = true;
 		}
 	}

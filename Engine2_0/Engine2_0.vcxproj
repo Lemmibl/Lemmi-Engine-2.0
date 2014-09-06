@@ -70,12 +70,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Camera.cpp" />
+    <ClCompile Include="Rendering\GameRenderer.cpp" />
+    <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="GUI\CEGUIMessageBox.cpp" />
     <ClCompile Include="GUI\CEGUIWrapper.cpp" />
     <ClCompile Include="GUI\FormattedListboxTextItem.cpp" />
     <ClCompile Include="GUI\GameConsoleWindow.cpp" />
     <ClCompile Include="Core systems\InputManager.cpp" />
     <ClCompile Include="Libraries\TinyThread\tinythread.cpp" />
+    <ClCompile Include="Game\Scene.cpp" />
     <ClCompile Include="Screens\OptionsScreen.cpp" />
     <ClCompile Include="Screens\GameplayScreen.cpp" />
     <ClCompile Include="Core systems\JobQueueManager.cpp" />
@@ -84,8 +88,12 @@
     <ClCompile Include="Screens\ScreenBaseClass.cpp" />
     <ClCompile Include="Screens\MainMenuScreen.cpp" />
     <ClCompile Include="Screens\ScreenManager.cpp" />
+    <ClCompile Include="Game\TerrainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Camera.h" />
+    <ClInclude Include="Rendering\GameRenderer.h" />
+    <ClInclude Include="Game\Game.h" />
     <ClInclude Include="GUI\CEGUIMessageBox.h" />
     <ClInclude Include="GUI\CEGUIWrapper.h" />
     <ClInclude Include="GUI\FormattedListboxTextItem.h" />
@@ -96,6 +104,7 @@
     <ClInclude Include="Libraries\TinyThread\fast_mutex.h" />
     <ClInclude Include="Libraries\TinyThread\ThreadsafeQueue.h" />
     <ClInclude Include="Libraries\TinyThread\tinythread.h" />
+    <ClInclude Include="Game\Scene.h" />
     <ClInclude Include="Screens\OptionsScreen.h" />
     <ClInclude Include="Screens\GameplayScreen.h" />
     <ClInclude Include="Core systems\JobQueueManager.h" />
@@ -104,6 +113,7 @@
     <ClInclude Include="Screens\MainMenuScreen.h" />
     <ClInclude Include="Screens\ScreenStates.h" />
     <ClInclude Include="Screens\ScreenManager.h" />
+    <ClInclude Include="Game\TerrainManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="design and todo.txt" />
