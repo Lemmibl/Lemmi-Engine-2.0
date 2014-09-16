@@ -39,7 +39,7 @@ bool ScreenManager::Initialize()
 	return true;
 }
 
-bool ScreenManager::Update()
+bool ScreenManager::Update(double deltaTime)
 {
 	//Terminate
 	if(!running)
@@ -47,12 +47,12 @@ bool ScreenManager::Update()
 		return false;
 	}
 
-	glfwTime = glfwGetTime();
+	//glfwTime = glfwGetTime();
 
 	//I've also made sure to have the option to let the individual states flag that the program should shut down
 	if(currentScreen->IsActive())
 	{
-		if(!currentScreen->Update(glfwTime))
+		if(!currentScreen->Update(deltaTime))
 		{
 			return false;
 		}
@@ -61,9 +61,9 @@ bool ScreenManager::Update()
 	return true;
 }
 
-void ScreenManager::Render()
+void ScreenManager::Render(double deltaTime)
 {
-	currentScreen->Render(glfwTime);
+	currentScreen->Render(deltaTime);
 }
 
 void ScreenManager::SwitchState(ScreenStates::State newScreenEnum)

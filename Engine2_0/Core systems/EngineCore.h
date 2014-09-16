@@ -1,5 +1,8 @@
 #pragma once
 
+//Include glew before glfw: http://www.glfw.org/faq.html#2_15
+#include <glew.h>
+
 /************************************************************************/
 /* This class is the very core of the engine. Every major system will   
  * be owned by this class. Probably. We'll see.							*/
@@ -37,7 +40,7 @@ private:
 	InputManager* inputManager;
 	GLFWwindow* glfwWindow;
 	float windowWidth, windowHeight;
-	double deltaTime, glfwTime;
+	double deltaTime, glfwTime, previousGlfwTime;
 
 	//TODO: Sound?
 };

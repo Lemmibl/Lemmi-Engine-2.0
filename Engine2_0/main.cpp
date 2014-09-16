@@ -1,5 +1,5 @@
 #pragma once
-#include "Libraries/VisualLeakDetector/include/vld.h"
+//#include "Libraries/VisualLeakDetector/include/vld.h"
 #include "Core systems/EngineCore.h"
 
 int main(int argc, char* argv[])

@@ -31,7 +31,7 @@ public:
 	void setFormatting(const HorizontalTextFormatting fmt);
 
 	// overriden functions.
-	Size<float> getPixelSize(void) const;
+	Size<float> getPixelSize() const;
 	void draw(GeometryBuffer& buffer, const Rect<float>& targetRect,
 			  float alpha, const Rect<float>* clipper) const;
 

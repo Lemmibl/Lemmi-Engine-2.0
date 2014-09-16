@@ -10,6 +10,8 @@ public:
 	Game();
 	~Game();
 
+	bool Initialize();
+
 	bool Update(double deltaTime);
 	bool Render(double deltaTime);
 

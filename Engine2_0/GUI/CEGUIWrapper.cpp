@@ -56,11 +56,17 @@ bool CEGUIWrapper::Initialize()
 	CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
 	CEGUI::SchemeManager::getSingleton().createFromFile("AlfiskoSkin.scheme");
 	CEGUI::SchemeManager::getSingleton().createFromFile("VanillaSkin.scheme");
+	
+	/* 
+	//This is for chat room stuff. Probably won't be relevant for a long while.
+	
 	CEGUI::SchemeManager::getSingleton().createFromFile("VanillaCommonDialogs.scheme");
 
 	//Set up some semi-supported windowtypes
 	CEGUI::WindowFactoryManager::addWindowType<CEGUI::ColourPicker>();
 	CEGUI::WindowFactoryManager::addWindowType<CEGUI::ColourPickerControls>();
+	
+	*/
 
 
 	// create (load) a font.
@@ -100,6 +106,7 @@ void CEGUIWrapper::Render()
 	// draw GUI
 	// NB: When not using >=3.2 core profile, this call should not occur
 	// between glBegin/glEnd calls.
+
 	CEGUI::System::getSingleton().renderAllGUIContexts();
 }
 

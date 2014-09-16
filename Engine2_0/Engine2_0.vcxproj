@@ -37,8 +37,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>../Engine2_0/Libraries/LibConfig;../Engine2_0/Libraries/GLFW/include;../Engine2_0/Libraries/VisualLeakDetector/include;../Engine2_0/Libraries/CEGUI/include;$(IncludePath)</IncludePath>
-    <LibraryPath>../Engine2_0/Libraries/CEGUI/lib;../Engine2_0/Libraries/GLFW/Debug;../Engine2_0/Libraries/LibConfig;../Engine2_0/Libraries/VisualLeakDetector/lib/win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>../Engine2_0/Libraries/LibConfig;../Engine2_0/Libraries/GLFW/include;../Engine2_0/Libraries/VisualLeakDetector/include;../Engine2_0/Libraries/CEGUI/include;../Engine2_0/Libraries/GLEW/include/GL;$(IncludePath)</IncludePath>
+    <LibraryPath>../Engine2_0/Libraries/CEGUI/lib;../Engine2_0/Libraries/GLFW/Debug;../Engine2_0/Libraries/LibConfig;../Engine2_0/Libraries/VisualLeakDetector/lib/win32;../Engine2_0/Libraries/GLEW/lib/Release/Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -47,13 +47,14 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAsManaged>false</CompileAsManaged>
       <MinimalRebuild>false</MinimalRebuild>
-      <PreprocessorDefinitions>NOMINMAX;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;NOMINMAX;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;CEGUIBase-0_d.lib;CEGUICoreWindowRendererSet_d.lib;CEGUICommonDialogs-0_d.lib;CEGUIOpenGLRenderer-0_d.lib;glfw3.lib;libconfig++.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;glfw3.lib;CEGUIBase-0_d.lib;CEGUICoreWindowRendererSet_d.lib;CEGUICommonDialogs-0_d.lib;CEGUIOpenGLRenderer-0_d.lib;libconfig++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,6 +72,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Camera.cpp" />
+    <ClCompile Include="Rendering\MaterialHandler.cpp" />
+    <ClCompile Include="Rendering\MeshHandler.cpp" />
     <ClCompile Include="Rendering\GameRenderer.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="GUI\CEGUIMessageBox.cpp" />
@@ -80,6 +83,7 @@
     <ClCompile Include="Core systems\InputManager.cpp" />
     <ClCompile Include="Libraries\TinyThread\tinythread.cpp" />
     <ClCompile Include="Game\Scene.cpp" />
+    <ClCompile Include="Rendering\RenderingQueue.cpp" />
     <ClCompile Include="Screens\OptionsScreen.cpp" />
     <ClCompile Include="Screens\GameplayScreen.cpp" />
     <ClCompile Include="Core systems\JobQueueManager.cpp" />
@@ -89,9 +93,13 @@
     <ClCompile Include="Screens\MainMenuScreen.cpp" />
     <ClCompile Include="Screens\ScreenManager.cpp" />
     <ClCompile Include="Game\TerrainManager.cpp" />
+    <ClCompile Include="Rendering\TextureHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Camera.h" />
+    <ClInclude Include="Rendering\MaterialHandler.h" />
+    <ClInclude Include="Rendering\MeshHandler.h" />
+    <ClInclude Include="Rendering\Renderable.h" />
     <ClInclude Include="Rendering\GameRenderer.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="GUI\CEGUIMessageBox.h" />
@@ -105,6 +113,7 @@
     <ClInclude Include="Libraries\TinyThread\ThreadsafeQueue.h" />
     <ClInclude Include="Libraries\TinyThread\tinythread.h" />
     <ClInclude Include="Game\Scene.h" />
+    <ClInclude Include="Rendering\RenderingQueue.h" />
     <ClInclude Include="Screens\OptionsScreen.h" />
     <ClInclude Include="Screens\GameplayScreen.h" />
     <ClInclude Include="Core systems\JobQueueManager.h" />
@@ -114,6 +123,7 @@
     <ClInclude Include="Screens\ScreenStates.h" />
     <ClInclude Include="Screens\ScreenManager.h" />
     <ClInclude Include="Game\TerrainManager.h" />
+    <ClInclude Include="Rendering\TextureHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="design and todo.txt" />

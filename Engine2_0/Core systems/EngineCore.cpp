@@ -3,7 +3,8 @@
 
 EngineCore::EngineCore()
 	//In the future these will be loaded from... say, a config file
-	: windowWidth(1024.0f), windowHeight(768.0f),
+	: windowWidth(800.0f), windowHeight(600.0f),
+	deltaTime(0.0), previousGlfwTime(0.0),
 	ceguiWrapper(), screenManager() //I don't necessarily need to call these constructors, it will happen automatically, but I like to decide in what order to call them.
 {
 }
@@ -122,7 +123,7 @@ bool EngineCore::Update()
 	glfwPollEvents();
 
 	glfwTime = glfwGetTime();
-	deltaTime = glfwTime - deltaTime;
+	deltaTime = (glfwTime - previousGlfwTime);
 
 	inputManager->Update(deltaTime);
 
@@ -136,13 +137,13 @@ bool EngineCore::Update()
 	ceguiWrapper.Update(deltaTime);
 
 	//Update currently active screen/state	
-	if(!screenManager.Update())
+	if(!screenManager.Update(deltaTime))
 	{
 		return false;
 	}
 
 	//Save for next time
-	deltaTime = glfwTime;
+	previousGlfwTime = glfwTime;
 
 	return true;
 }
@@ -150,13 +151,13 @@ bool EngineCore::Update()
 
 void EngineCore::Render()
 {
-	//Render all GUI stuff
-	ceguiWrapper.Render();
-
 	// Render whatever state is currently active. 
 	// Not even sure if this is needed because all the states are just different menus, and they should get rendered when ceguiwrapper::render is called.
 	// I keep it in for future proofing.
-	screenManager.Render();
+	screenManager.Render(deltaTime);
+
+	//Render all GUI stuff
+	ceguiWrapper.Render();
 
 	//glfw stuff
 	glfwSwapBuffers(glfwWindow);

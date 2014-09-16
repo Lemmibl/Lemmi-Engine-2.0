@@ -15,7 +15,6 @@ MainMenuScreen::~MainMenuScreen()
 
 bool MainMenuScreen::Enter()
 {
-	SetActivated(true);
 	bool result;
 
 	if(!HasBeenInitialized())
@@ -29,14 +28,16 @@ bool MainMenuScreen::Enter()
 		SetInitialized(true);
 	}
 
-	//Show mouse cursor
-	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setVisible(true);
+	SetActivated(true);
 
 	//Set this base window as root.
 	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(rootWindow);
 
 	rootWindow->activate();
 	rootWindow->show();
+
+	//Show mouse cursor
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().show();
 
 	return true;
 }
@@ -46,10 +47,11 @@ void MainMenuScreen::Exit()
 	SetActivated(false);
 
 	//Hide mouse cursor
-	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setVisible(false);
+	//CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().hide();
 
 	//When exiting, hide and deactivate window
 	rootWindow->hide();
+	rootWindow->deactivate();
 }
 
 bool MainMenuScreen::Initialize()
@@ -60,6 +62,7 @@ bool MainMenuScreen::Initialize()
 	{
 		return false;
 	}
+
 	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(rootWindow);
 
 	//Set up start game function and bind it to the options button

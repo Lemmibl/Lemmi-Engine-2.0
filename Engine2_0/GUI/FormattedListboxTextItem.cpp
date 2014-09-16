@@ -43,7 +43,7 @@ namespace CEGUI
 	}
 
 	//----------------------------------------------------------------------------//
-	Size<float> FormattedListboxTextItem::getPixelSize(void) const
+	Size<float> FormattedListboxTextItem::getPixelSize() const
 	{
 		if (!d_owner)
 			return Size<float>(0, 0);

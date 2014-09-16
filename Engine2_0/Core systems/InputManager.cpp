@@ -320,4 +320,6 @@ void InputManager::LockMouseCursor(bool val)
 	{
 		glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
+
+	glfwSetCursorPos(glfwWindow, centerMousePos.first, centerMousePos.second);
 }

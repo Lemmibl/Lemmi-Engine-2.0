@@ -21,9 +21,12 @@ bool GameplayScreen::Enter()
 		else
 		{
 			SetInitialized(true);
-			SetActivated(true);
 		}
 	}
+
+	//TODO: Turn off CEGUI completely here? Look in old Engine
+
+	SetActivated(true);
 
 	return true;
 }
@@ -31,11 +34,19 @@ bool GameplayScreen::Enter()
 void GameplayScreen::Exit()
 {
 	SetActivated(false);
+
+	//Show mouse cursor
+	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().show();
 }
 
 bool GameplayScreen::Initialize()
 {
 	glfwWindow = glfwGetCurrentContext();
+
+	if(!currentGame.Initialize())
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -58,7 +69,7 @@ bool GameplayScreen::Update( double deltaTime )
 
 bool GameplayScreen::Render( double deltaTime )
 {
-	if(currentGame.Render(deltaTime))
+	if(!currentGame.Render(deltaTime))
 	{
 		return false;
 	}

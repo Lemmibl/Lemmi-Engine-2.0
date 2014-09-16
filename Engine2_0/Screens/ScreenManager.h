@@ -13,8 +13,8 @@ public:
 
 	bool Initialize();
 
-	bool Update();
-	void Render();
+	bool Update(double deltaTime);
+	void Render(double deltaTime);
 	void SwitchState(ScreenStates::State newState);
 	bool IsRunning() { return running; }
 
