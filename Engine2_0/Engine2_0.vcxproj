@@ -94,8 +94,10 @@
     <ClCompile Include="Screens\ScreenManager.cpp" />
     <ClCompile Include="Game\TerrainManager.cpp" />
     <ClCompile Include="Rendering\TextureHandler.cpp" />
+    <ClCompile Include="Rendering\ShaderManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Data\Shaders\GeneralShader.glsl" />
     <ClInclude Include="Game\Camera.h" />
     <ClInclude Include="Rendering\MaterialHandler.h" />
     <ClInclude Include="Rendering\MeshHandler.h" />
@@ -114,6 +116,7 @@
     <ClInclude Include="Libraries\TinyThread\tinythread.h" />
     <ClInclude Include="Game\Scene.h" />
     <ClInclude Include="Rendering\RenderingQueue.h" />
+    <ClInclude Include="Rendering\ShaderTypes.h" />
     <ClInclude Include="Screens\OptionsScreen.h" />
     <ClInclude Include="Screens\GameplayScreen.h" />
     <ClInclude Include="Core systems\JobQueueManager.h" />
@@ -124,6 +127,7 @@
     <ClInclude Include="Screens\ScreenManager.h" />
     <ClInclude Include="Game\TerrainManager.h" />
     <ClInclude Include="Rendering\TextureHandler.h" />
+    <ClInclude Include="Rendering\ShaderManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="design and todo.txt" />

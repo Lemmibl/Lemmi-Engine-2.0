@@ -65,7 +65,16 @@ bool EngineCore::InitializeGUI()
 	}
 
 	/* Make the window's context current */
-	glfwMakeContextCurrent(glfwWindow);
+	glfwMakeContextCurrent(glfwWindow); // Initialize GLEW 
+	
+
+	glewExperimental = GL_TRUE;
+
+	//Initialize GLEW
+	if (glewInit() != GLEW_OK)
+	{
+		return false;
+	}
 
 	//Bind all the callback functions that GLFW calls upon events
 	glfwSetKeyCallback(glfwWindow,					InputManager::GLFWKeyCallback);
@@ -151,13 +160,13 @@ bool EngineCore::Update()
 
 void EngineCore::Render()
 {
+	//Render all GUI stuff
+	ceguiWrapper.Render();
+	
 	// Render whatever state is currently active. 
 	// Not even sure if this is needed because all the states are just different menus, and they should get rendered when ceguiwrapper::render is called.
 	// I keep it in for future proofing.
 	screenManager.Render(deltaTime);
-
-	//Render all GUI stuff
-	ceguiWrapper.Render();
 
 	//glfw stuff
 	glfwSwapBuffers(glfwWindow);

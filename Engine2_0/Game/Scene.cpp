@@ -6,7 +6,6 @@ Scene::Scene()
 	
 }
 
-
 Scene::~Scene()
 {
 }
@@ -26,32 +25,38 @@ void Scene::Load()
 	the buffers so they can be regarded as "generic". This is the job of the next function.
 	*/
 
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
+	points[0] = 0.0f;
+	points[1] = 0.5f;
+	points[2] = 0.0f;
+	points[3] = 0.5f;
+	points[4] = -0.5f;
+	points[5] = 0.0f;
+	points[6] = -0.5f;
+	points[7] = -0.5f;
+	points[8] = 0.0f;
 
-	vertices[0] = -1.0f;
-	vertices[1] = -1.0f;
-	vertices[2] = 0.0f;
-	vertices[3] = 1.0f;
-	vertices[4] = -1.0f;
-	vertices[5] = 0.0f;
-	vertices[6] = 0.0f;
-	vertices[7] = 1.0f;
-	vertices[8] = 0.0f;
+	vertexBufferObject = 0;
+	glGenBuffers(1, &vertexBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float)*9, points, GL_STATIC_DRAW);
 
-	BindScene();
+	vertexAttributeObject = 0;
+	glGenVertexArrays (1, &vertexAttributeObject);
+	glBindVertexArray (vertexAttributeObject);
+	glEnableVertexAttribArray(0);
+	glBindBuffer (GL_ARRAY_BUFFER, vertexBufferObject);
+	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
-void Scene::BindScene()
-{
-	// Generate 1 buffer, put the resulting identifier in vertexbuffer
-	glGenBuffers(1, &vertexbuffer);
-
-	// The following commands will talk about our 'vertexbuffer' buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-
-	// Give our vertices to OpenGL.
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-}
+//void Scene::BindScene()
+//{
+//	// Generate 1 buffer, put the resulting identifier in vertexbuffer
+//	glGenBuffers(1, &vertexbuffer);
+//
+//	// The following commands will talk about our 'vertexbuffer' buffer
+//	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+//
+//	// Give our vertices to OpenGL.
+//	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+//
+//}

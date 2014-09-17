@@ -7,6 +7,9 @@
 #include <GLFW/glfw3.h>
 #include "math_3d.h"
 
+#include "ShaderManager.h"
+#include "ShaderTypes.h"
+
 class Scene;
 
 class GameRenderer
@@ -31,5 +34,6 @@ private:
 	float ratio;
 
 	std::vector<std::function<void(Scene*)>> renderPasses;
+	ShaderManager shaderManager;
 };
 

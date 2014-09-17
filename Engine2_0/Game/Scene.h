@@ -18,18 +18,14 @@ public:
 	//In the future we'll probably have, like, a string to specify a level name or something along those lines. A random seed, maybe.
 	void Load();
 
-	GLuint GetVertexBuffer() { return vertexbuffer; }
+private:
+	//void BindScene();
 
 private:
-	void BindScene();
-
-private:
-	GLfloat vertices[9];
-	GLuint vbo;
-
-	// This will identify our vertex buffer
-	GLuint vertexbuffer;
-
+	GLuint vertexBufferObject;
+	GLuint vertexAttributeObject;
 	Camera playerCamera;
+
+	float points[9];
 };
 
