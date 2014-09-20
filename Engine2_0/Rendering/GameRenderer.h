@@ -9,6 +9,7 @@
 
 #include "ShaderManager.h"
 #include "ShaderTypes.h"
+#include "../Game/Scene.h"
 
 class Scene;
 
@@ -25,7 +26,6 @@ public:
 
 private:
 	void SetupRenderPasses();
-
 
 
 private:

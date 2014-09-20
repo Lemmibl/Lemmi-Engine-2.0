@@ -2,7 +2,7 @@
 
 namespace ShaderEnums
 {
-	typedef int Name;
+	typedef unsigned int Name;
 	
 	enum
 	{

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Rendering/GameRenderer.h"
-#include "TerrainManager.h"
+#include "../Terrain/TerrainManager.h"
 #include "Scene.h"
 
 
@@ -9,6 +9,7 @@ class Game
 public:
 	Game();
 	~Game();
+	bool Shutdown();
 
 	bool Initialize();
 

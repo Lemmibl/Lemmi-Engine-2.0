@@ -1,9 +1,11 @@
 #pragma once
-
 #include "Camera.h"
 
 #include <glew.h>
 #include "math_3d.h"
+
+#include "../Core systems/Data classes/FlyweightHandle.h"
+using namespace HandleFunctions;
 
 class Scene
 {
@@ -25,6 +27,7 @@ private:
 	GLuint vertexBufferObject;
 	GLuint vertexAttributeObject;
 	Camera playerCamera;
+	FlyweightHandle testHandle;
 
 	float points[9];
 };

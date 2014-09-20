@@ -1,9 +1,13 @@
 #pragma once
 #include "ScreenBaseClass.h"
 
-#include "../Game/Game.h"
 #include "CEGUI/CEGUI.h"
+
+//I don't really need glew in this class, but glew bitches if I include glfw before glew
+#include <glew.h>
 #include <GLFW/glfw3.h>
+
+class Game;
 
 class GameplayScreen : public ScreenBaseClass
 {
@@ -20,7 +24,11 @@ public:
 	virtual bool Render(double deltaTime);
 
 private:
+	bool NewGame();
+	void ShutdownGame();
+
+private:
 	GLFWwindow* glfwWindow;
-	Game currentGame;
+	Game* currentGame;
 };
 

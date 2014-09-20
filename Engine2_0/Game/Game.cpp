@@ -9,6 +9,12 @@ Game::~Game()
 {
 }
 
+bool Game::Shutdown()
+{
+
+	return true;
+}
+
 bool Game::Initialize()
 {
 	if(!gameRenderer.Initialize())

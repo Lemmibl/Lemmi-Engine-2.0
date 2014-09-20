@@ -37,8 +37,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>../Engine2_0/Libraries/LibConfig;../Engine2_0/Libraries/GLFW/include;../Engine2_0/Libraries/VisualLeakDetector/include;../Engine2_0/Libraries/CEGUI/include;../Engine2_0/Libraries/GLEW/include/GL;$(IncludePath)</IncludePath>
-    <LibraryPath>../Engine2_0/Libraries/CEGUI/lib;../Engine2_0/Libraries/GLFW/Debug;../Engine2_0/Libraries/LibConfig;../Engine2_0/Libraries/VisualLeakDetector/lib/win32;../Engine2_0/Libraries/GLEW/lib/Release/Win32;$(LibraryPath)</LibraryPath>
+    <IncludePath>../Engine2_0/Libraries/LibConfig;../Engine2_0/Libraries/GLFW/include;../Engine2_0/Libraries/VisualLeakDetector/include;../Engine2_0/Libraries/CEGUI/include;../Engine2_0/Libraries/GLEW/include/GL;../Engine2_0/Libraries/Assimp/include;$(IncludePath)</IncludePath>
+    <LibraryPath>../Engine2_0/Libraries/CEGUI/lib;../Engine2_0/Libraries/GLFW/Debug;../Engine2_0/Libraries/LibConfig;../Engine2_0/Libraries/VisualLeakDetector/lib/win32;../Engine2_0/Libraries/GLEW/lib/Release/Win32;../Engine2_0/Libraries/Assimp/lib32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -54,7 +54,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32s.lib;opengl32.lib;glfw3.lib;CEGUIBase-0_d.lib;CEGUICoreWindowRendererSet_d.lib;CEGUICommonDialogs-0_d.lib;CEGUIOpenGLRenderer-0_d.lib;libconfig++.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;opengl32.lib;glfw3.lib;CEGUIBase-0_d.lib;CEGUICoreWindowRendererSet_d.lib;CEGUICommonDialogs-0_d.lib;CEGUIOpenGLRenderer-0_d.lib;libconfig++.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,7 +71,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core systems\Data classes\FlyweightHandle.cpp" />
     <ClCompile Include="Game\Camera.cpp" />
+    <ClCompile Include="Rendering\RenderableModel.cpp" />
+    <ClCompile Include="Terrain\MarchingCubesFactory.cpp" />
     <ClCompile Include="Rendering\MaterialHandler.cpp" />
     <ClCompile Include="Rendering\MeshHandler.cpp" />
     <ClCompile Include="Rendering\GameRenderer.cpp" />
@@ -92,13 +95,17 @@
     <ClCompile Include="Screens\ScreenBaseClass.cpp" />
     <ClCompile Include="Screens\MainMenuScreen.cpp" />
     <ClCompile Include="Screens\ScreenManager.cpp" />
-    <ClCompile Include="Game\TerrainManager.cpp" />
+    <ClCompile Include="Terrain\TerrainManager.cpp" />
     <ClCompile Include="Rendering\TextureHandler.cpp" />
     <ClCompile Include="Rendering\ShaderManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core systems\Data classes\FlyweightHandle.h" />
+    <ClInclude Include="Core systems\Data classes\HandleTypes.h" />
     <ClInclude Include="Data\Shaders\GeneralShader.glsl" />
     <ClInclude Include="Game\Camera.h" />
+    <ClInclude Include="Rendering\RenderableModel.h" />
+    <ClInclude Include="Terrain\MarchingCubesFactory.h" />
     <ClInclude Include="Rendering\MaterialHandler.h" />
     <ClInclude Include="Rendering\MeshHandler.h" />
     <ClInclude Include="Rendering\Renderable.h" />
@@ -125,7 +132,8 @@
     <ClInclude Include="Screens\MainMenuScreen.h" />
     <ClInclude Include="Screens\ScreenStates.h" />
     <ClInclude Include="Screens\ScreenManager.h" />
-    <ClInclude Include="Game\TerrainManager.h" />
+    <ClInclude Include="Terrain\MCChunk.h" />
+    <ClInclude Include="Terrain\TerrainManager.h" />
     <ClInclude Include="Rendering\TextureHandler.h" />
     <ClInclude Include="Rendering\ShaderManager.h" />
   </ItemGroup>

@@ -1,55 +1,68 @@
 #include "GameplayScreen.h"
 
+#include "../Game/Game.h"
+
 GameplayScreen::GameplayScreen()
-: ScreenBaseClass()
+	: ScreenBaseClass(),
+	currentGame(nullptr)
 {
 }
 
 
 GameplayScreen::~GameplayScreen()
 {
+	ShutdownGame();
 }
+
 
 bool GameplayScreen::Enter()
 {
-	if(!HasBeenInitialized())
-	{
-		if(!Initialize())
-		{
-			return false;
-		}
-		else
-		{
-			SetInitialized(true);
-		}
-	}
+	//if(!HasBeenInitialized())
+	//{
+	//if(!Initialize())
+	//{
+	//	return false;
+	//}
+	//else
+	//{
+	//	SetInitialized(true);
+	//}
+	//}
 
-	//TODO: Turn off CEGUI completely here? Look in old Engine
+	if(!Initialize())
+	{
+		return false;
+	}
 
 	SetActivated(true);
 
 	return true;
 }
 
+
 void GameplayScreen::Exit()
 {
 	SetActivated(false);
+
+	ShutdownGame();
 
 	//Show mouse cursor
 	CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().show();
 }
 
+
 bool GameplayScreen::Initialize()
 {
 	glfwWindow = glfwGetCurrentContext();
 
-	if(!currentGame.Initialize())
+	if(!NewGame())
 	{
 		return false;
 	}
 
 	return true;
 }
+
 
 bool GameplayScreen::Update( double deltaTime )
 {
@@ -59,7 +72,7 @@ bool GameplayScreen::Update( double deltaTime )
 		stateChangeEvent(ScreenStates::MainMenu);
 	}
 
-	if(!currentGame.Update(deltaTime))
+	if(!currentGame->Update(deltaTime))
 	{
 		return false;
 	}
@@ -67,12 +80,42 @@ bool GameplayScreen::Update( double deltaTime )
 	return true;
 }
 
+
 bool GameplayScreen::Render( double deltaTime )
 {
-	if(!currentGame.Render(deltaTime))
+	if(!currentGame->Render(deltaTime))
 	{
 		return false;
 	}
 
 	return true;
+}
+
+
+bool GameplayScreen::NewGame()
+{
+	currentGame = new Game();
+	if(currentGame == nullptr)
+	{
+		return false;
+	}
+
+	if(!currentGame->Initialize())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+
+void GameplayScreen::ShutdownGame()
+{
+	if(currentGame != nullptr)
+	{
+		currentGame->Shutdown();
+
+		delete currentGame;
+		currentGame = nullptr;
+	}
 }
