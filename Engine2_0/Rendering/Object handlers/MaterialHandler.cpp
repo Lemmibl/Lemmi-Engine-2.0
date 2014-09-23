@@ -2,7 +2,7 @@
 
 
 MaterialHandler::MaterialHandler()
-: materialContainer(64)
+: HandlerBaseClass(64)
 {
 }
 
@@ -10,36 +10,21 @@ MaterialHandler::~MaterialHandler()
 {
 }
 
-HandleFunctions::FlyweightHandle MaterialHandler::LoadMaterial( std::string filename, aiMaterial* material )
+FlyweightHandleFunctions::FlyweightHandle MaterialHandler::LoadMaterial( std::string filename, aiMaterial* material )
 {
+	FlyweightHandle returnHandle;
 
-}
-
-bool MaterialHandler::LookForDuplicateMaterial(std::string fileName, FlyweightHandle& outHandle)
-{
-	//For each mesh that we've stored in our DODArray
-	for(unsigned int i = 0; i < fileNameAndMaterialPairings.size(); ++i)
+	if(LookForDuplicateObject(filename, returnHandle))
 	{
-		//If the filename matches  any of our stored filenames...
-		if(fileNameAndMaterialPairings[i].first == fileName)
-		{
-			//We return the handle to that object
-			outHandle = fileNameAndMaterialPairings[i].second;
-
-			//And return true to indicate that we've succeeded
-			return true;
-		}
+		return returnHandle;
 	}
 
-	//We return false if we haven't saved this filename before
-	return false;
-}
 
-void MaterialHandler::InsertNewPair(std::string filepath, FlyweightHandle handle)
-{
-	fileNameAndMaterialPairings.push_back(std::make_pair<std::string, FlyweightHandle>(filepath, handle));
-}
 
+	InsertNewPair(filename, returnHandle);
+
+	return returnHandle;
+}
 
 /*
 bool Mesh::InitMaterials(const aiScene* pScene, const std::string& Filename)

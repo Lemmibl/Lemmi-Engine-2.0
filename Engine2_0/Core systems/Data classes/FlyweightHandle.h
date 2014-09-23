@@ -2,7 +2,7 @@
 #include <xutility>
 #include "HandleTypes.h"
 
-namespace HandleFunctions
+namespace FlyweightHandleFunctions
 {
 	typedef unsigned int FlyweightHandle;
 

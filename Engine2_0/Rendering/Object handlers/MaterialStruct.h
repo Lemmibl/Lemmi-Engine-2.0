@@ -1,5 +1,5 @@
 #pragma once
-#include <Eigen/Dense>
+#include <Dense>
 
 using namespace Eigen;
 
@@ -10,4 +10,4 @@ struct MaterialStruct
 	Vector3f ambient; //You know the drill
 	float roughness; //How "big" the specular area is
 	bool transparent;
-}
+};

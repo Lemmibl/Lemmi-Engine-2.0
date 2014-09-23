@@ -31,7 +31,7 @@ bool ModelHandler::Initialize(MaterialHandler* mtlHandlerPtr, MeshHandler* meshH
 	return true;
 }
 
-HandleFunctions::FlyweightHandle ModelHandler::LoadModel(std::string fileName)
+FlyweightHandleFunctions::FlyweightHandle ModelHandler::LoadModel(std::string fileName)
 {
 	//Just to enforce uniformity I force all characters to lowercase.
 	//I need uniformity to make sure that string comparisons don't fail because of upper/lowercase inconsistencies.
@@ -56,8 +56,6 @@ HandleFunctions::FlyweightHandle ModelHandler::LoadModel(std::string fileName)
 
 	FlyweightHandle meshHandle = meshHandler->LoadMesh(scene, fileName);
 
-
-
 	//for(each mesh, each material, each texture) call Insert/load into the right handler
 	//in the case of material/texture, match the internal model handles with external handles so 
 	// that when the model wants to access "texture 01" it has to correspond to the right handle in texture handler
@@ -71,7 +69,7 @@ HandleFunctions::FlyweightHandle ModelHandler::LoadModel(std::string fileName)
 
 const Model& ModelHandler::GetModel(FlyweightHandle handle)
 {
-	return modelContainer.GetSpecificObject(HandleFunctions::GetKey(handle));
+	return modelContainer.GetSpecificObject(FlyweightHandleFunctions::GetKey(handle));
 }
 
 bool ModelHandler::LookForDuplicateModels(std::string fileName, FlyweightHandle& outHandle)

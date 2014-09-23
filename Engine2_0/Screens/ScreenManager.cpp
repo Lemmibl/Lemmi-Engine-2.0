@@ -94,7 +94,7 @@ void ScreenManager::SwitchState(ScreenStates::State newScreenEnum)
 		//Aaaand... Enter new screen
 		if(!currentScreen->Enter())
 		{
-			//FAILURE
+			//FAILURE, try to minimize damage and exit (by returning)
 			currentScreen = nullptr;
 			running = false;
 			return;

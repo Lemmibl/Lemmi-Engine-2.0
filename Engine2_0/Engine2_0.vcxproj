@@ -43,7 +43,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAsManaged>false</CompileAsManaged>
       <MinimalRebuild>false</MinimalRebuild>
@@ -106,6 +105,7 @@
     <ClInclude Include="Core systems\Data classes\HandleTypes.h" />
     <ClInclude Include="Data\Shaders\GeneralShader.glsl" />
     <ClInclude Include="Game\Camera.h" />
+    <ClInclude Include="Rendering\Object handlers\HandlerBaseClass.h" />
     <ClInclude Include="Rendering\Object handlers\MaterialStruct.h" />
     <ClInclude Include="Rendering\Object handlers\ModelHandler.h" />
     <ClInclude Include="Rendering\Objects\Mesh.h" />

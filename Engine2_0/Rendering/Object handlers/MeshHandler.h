@@ -1,30 +1,21 @@
 #pragma once
-#include <string>
-
-#include "../../Core systems/Data classes/FlyweightHandle.h"
-#include "../../Core systems/Data classes/DODArray.h"
+#include <glew.h>
+#include <GLFW/glfw3.h>
+#include <assimp/scene.h>
 
 #include "../Objects/Mesh.h"
 
-using namespace HandleFunctions;
+#include "HandlerBaseClass.h"
 
-class MeshHandler
+
+class MeshHandler : HandlerBaseClass<Mesh, unsigned short>
 {
 public:
 	MeshHandler();
 	~MeshHandler();
 
 	FlyweightHandle LoadMesh(const aiScene* scene, std::string fileName);
-
 	const Mesh& GetMesh(FlyweightHandle meshHandle);
-
-private:
-	bool LookForDuplicateMeshes(std::string fileName, FlyweightHandle& outHandle);
-	void InsertNewPair(std::string filepath, FlyweightHandle handle);
-
-private:
-	DODContainer<Mesh, unsigned short> meshes;
-	std::vector<std::pair<std::string, FlyweightHandle>> filePathAndMeshPairings;
 };
 
 /************************************************************************/

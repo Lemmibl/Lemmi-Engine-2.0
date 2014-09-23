@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
-using namespace HandleFunctions;
+using namespace FlyweightHandleFunctions;
 
 class Model
 {

@@ -3,7 +3,7 @@
 
 #include <glew.h>
 #include "../Core systems/Data classes/FlyweightHandle.h"
-using namespace HandleFunctions;
+using namespace FlyweightHandleFunctions;
 
 class Scene
 {

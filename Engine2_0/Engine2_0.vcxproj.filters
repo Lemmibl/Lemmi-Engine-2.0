@@ -221,6 +221,9 @@
     <ClInclude Include="Rendering\Object handlers\MaterialStruct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Rendering\Object handlers\HandlerBaseClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\settings.cfg" />

@@ -82,13 +82,11 @@ void GameRenderer::SetupRenderPasses()
 		}
 	);
 	
-
 	//Then we insert this render pass
 	renderPasses.push_back(generalRenderPass);
 }
 
 /*
- 
  void Mesh::Render()
  {
  glEnableVertexAttribArray(0);
