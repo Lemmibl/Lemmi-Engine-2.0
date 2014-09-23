@@ -1,240 +1,144 @@
 #include "TextureHandler.h"
 
+#include <SOIL2.h>
+
+static const std::string baseFilePath = "../Engine2_0/Data/Textures/";
+
 TextureHandler::TextureHandler()
-	: modelTextures(64)
+: textureContainer(64)
 {
 }
+
 
 TextureHandler::~TextureHandler()
 {
-	//Empty, 'cause CComPtr and shared_ptr
 }
 
-bool TextureHandler::Initialize(ID3D11Device* extDevice, ID3D11DeviceContext* extDeviceContext)
+HandleFunctions::FlyweightHandle TextureHandler::LoadTexture(std::string filename, aiMaterial* material)
 {
-	HRESULT hResult;
+	FlyweightHandle newHandle;
 
-	 device = extDevice;
-	 deviceContext = extDeviceContext;
-
-	std::vector<WCHAR*> terrainFilenames;
-
-	terrainFilenames.push_back(L"../Engine/data/dirt.dds");//dirt //0
-	terrainFilenames.push_back(L"../Engine/data/grassTileTest01.dds"); //1   grassGreenYellow
-	//terrainFilenames.push_back(L"../Engine/data/randomGrass.dds"); //1
-	terrainFilenames.push_back(L"../Engine/data/rock4.dds");
-	terrainFilenames.push_back(L"../Engine/data/seafloor.dds"); //4
-	//terrainFilenames.push_back(L"../Engine/data/randomDirt.dds");//4
-	terrainFilenames.push_back(L"../Engine/data/snow.dds");
-	terrainFilenames.push_back(L"../Engine/data/stone.dds");
-
-
-	//If this SRV has been initialized before, release it first.
-	if(terrainTextureArraySRV != 0)
+	if(LookForDuplicateTexture(filename, newHandle))
 	{
-		terrainTextureArraySRV.Release();
+		return newHandle;
 	}
 
-	hResult = texCreator.Load2DTextureArrayFromFiles(device, deviceContext, terrainFilenames.data(), terrainFilenames.size(), 
-		&terrainTextureArraySRV.p, 1024, 1024);
-	if(FAILED(hResult))
+	unsigned short newTextureHandle;
+
+	if(textureContainer.AddNewObject(newTextureHandle))
 	{
-		return false;
-	}
+		textureContainer[newTextureHandle] = NULL;
 
-	std::vector<WCHAR*> vegetationFilenames;
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants01.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants02.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants03.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants04.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants08.dds");
-
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants05.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants06.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants07.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants08.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants08.dds");
-
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants08.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants09.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants10.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants11.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants12.dds");
-
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants13.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants14.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants15.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants16.dds");
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants17.dds");
-
-	vegetationFilenames.push_back(	L"../Engine/data/CGTextures/Vegetation/Plants08.dds");
-
-	//If this SRV has been initialized before, release it first.
-	if(vegetationTextureArraySRV != 0)
-	{
-		vegetationTextureArraySRV.Release();
-	}
-
-	hResult = texCreator.Load2DTextureArrayFromFiles(device, deviceContext, vegetationFilenames.data(), vegetationFilenames.size(), 
-		&vegetationTextureArraySRV.p, 512, 512);
-	if(FAILED(hResult))
-	{
-		return false;
-	}
-
-	return true;
-}
-
-
-bool TextureHandler::Load2DTextureFromFile( ID3D11Device* device, std::wstring textureFilepath, ID3D11ShaderResourceView** srv )
-{
-	HRESULT result;
-	
-	D3DX11CreateShaderResourceViewFromFile(device, textureFilepath.c_str(), NULL, NULL, srv, &result);
-	if(FAILED(result))
-	{
-		MessageBox(GetDesktopWindow(), (L"Couldn't load this 2D texture: " + *textureFilepath.c_str()), L"Error", MB_OK);
-		return false;
-	}
-
-	return true;
-}
-
-bool TextureHandler::Load2DCubemapTextureFromFile( ID3D11Device* device, std::wstring textureFilepath, ID3D11ShaderResourceView** srv)
-{
-	HRESULT result;
-
-	//Tell D3D we will be loading a cube texture
-	D3DX11_IMAGE_LOAD_INFO loadInfo;
-	loadInfo.Width = 1024;
-	loadInfo.Height = 1024;
-	loadInfo.Depth = 0;
-	loadInfo.FirstMipLevel = 0;
-	loadInfo.MipLevels = 0;
-	loadInfo.Usage = D3D11_USAGE_IMMUTABLE;
-	loadInfo.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	loadInfo.CpuAccessFlags = 0;
-	loadInfo.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
-	loadInfo.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	loadInfo.Filter = D3DX11_FILTER_LINEAR;
-	loadInfo.MipFilter = D3DX11_FILTER_LINEAR;
-	loadInfo.pSrcInfo = NULL; 
-
-	//Load the texture
-	ID3D11Texture2D* SMTexture = 0;
-
-	result = D3DX11CreateTextureFromFile(device, textureFilepath.c_str(), &loadInfo, NULL, (ID3D11Resource**)&SMTexture, NULL);
-	if(FAILED(result))
-	{
-		return false;
-	}
-
-	//Create the textures description
-	D3D11_TEXTURE2D_DESC SMTextureDesc;
-	SMTexture->GetDesc(&SMTextureDesc);
-
-	//Tell D3D We have a cube texture, which is an array of 2D textures
-	D3D11_SHADER_RESOURCE_VIEW_DESC SMViewDesc;
-	SMViewDesc.Format = SMTextureDesc.Format;
-	SMViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-	SMViewDesc.TextureCube.MipLevels = SMTextureDesc.MipLevels;
-	SMViewDesc.TextureCube.MostDetailedMip = 0;
-
-	//Create the Resource view
-	result = device->CreateShaderResourceView(SMTexture, &SMViewDesc, srv);
-	if(FAILED(result))
-	{
-		return false;
-	}
-
-	return true;
-}
-
-void TextureHandler::SaveTextureToFile( ID3D11DeviceContext* deviceContext, ID3D11ShaderResourceView* texture, D3DX11_IMAGE_FILE_FORMAT format, LPCSTR fileName )
-{
-	HRESULT hResult;
-
-	ID3D11Resource* res;
-	ID3D11Texture2D* tex;
-	texture->GetResource(&res);
-	res->QueryInterface(&tex);
-
-	hResult = D3DX11SaveTextureToFileA(deviceContext, tex, format, fileName);
-	if(FAILED(hResult))
-	{
-		MessageBox(GetDesktopWindow(), L"Something went wrong when trying to save texture to file. Look in TextureAndMaterialHandler::SaveTextureToFile.", L"Error", MB_OK);
-	}
-
-	res->Release();
-	tex->Release();
-	res = 0;
-	tex = 0;
-}
-
-unsigned short TextureHandler::AddNewtexture(ID3D11Device* device, std::wstring textureFilepath )
-{
-	unsigned short newHandle = 0;
-
-	//If there ISNT a duplicate texture
-	if(!CheckForDuplicateTextures(textureFilepath, newHandle))
-	{
-		//We allocate a new slot in our modelTextures container
-		if(modelTextures.AddNewObject(newHandle))
+		//If the material contains any diffuse textures
+		if(material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 		{
-			HRESULT result;
+			aiString textureName;
 
-			if(modelTextures[newHandle] != 0)
+			//See if we can fetch a diffuse texture from the material
+			if(material->GetTexture(aiTextureType_DIFFUSE, 0, &textureName, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) 
 			{
-				modelTextures[newHandle].Release();
-			}
+				std::string fullPath = baseFilePath + textureName.C_Str();
 
-			result = D3DX11CreateShaderResourceViewFromFile(device, textureFilepath.c_str(),
-				NULL, NULL, &modelTextures[newHandle].p, NULL );
+				//Load texture and automatically store it inside openGL's ... innards.
+				GLuint oglTexHandle = SOIL_load_OGL_texture
+				(
+					fullPath.c_str(),
+					SOIL_LOAD_AUTO,
+					SOIL_CREATE_NEW_ID,
+					0 //No flags right now
+				);
 
-			if(FAILED(result))
-			{
-				std::wstring message;
-				message += L"Could not load texture file: ";
-				message += textureFilepath.c_str();
+				//Save it in our container.
+				textureContainer[newTextureHandle] = oglTexHandle;
 
-				MessageBox(0, message.c_str(), L"Error", MB_OK);
+				//Make sure we encode the handle properly
+				newHandle = CreateHandle(HandleTypes::Texture, newTextureHandle);
 			}
-			else
-			{
-				//So if EVERYTHING went through, add the filepath and related handle so that we can check for duplicates of this texture in the future
-				textureNameAndKeyPairings.push_back(std::make_pair<std::wstring, unsigned short>(textureFilepath, newHandle));
-			}
-		} 
+		}
 	}
 
-	return newHandle; 
+	return newHandle;
 }
 
-//Returns true if there's a duplicate found. This means that the outHandle will be assigned a value.
-bool TextureHandler::CheckForDuplicateTextures(std::wstring filepath, unsigned short& outHandle)
+
+bool TextureHandler::LookForDuplicateTexture( std::string fileName, FlyweightHandle& outHandle )
 {
-
-	for(unsigned int i = 0; i < textureNameAndKeyPairings.size(); i++)
+	//For each mesh that we've stored in our DODArray
+	for(unsigned int i = 0; i < fileNameAndTexturePairings.size(); ++i)
 	{
-		auto& pair = textureNameAndKeyPairings[i];
-
-		//If this is true, it means we've been trying to add a duplicate texture
-		if(filepath == pair.first)
+		//If the filename matches  any of our stored filenames...
+		if(fileNameAndTexturePairings[i].first == fileName)
 		{
-			//So don't add a duplicate texture, instead just return the handle to the identical texture that is already loaded in
-			outHandle = pair.second;
+			//We return the handle to that object
+			outHandle = fileNameAndTexturePairings[i].second;
 
-			//Break loop
+			//And return true to indicate that we've succeeded
 			return true;
 		}
 	}
 
+	//We return false if we haven't saved this filename before
 	return false;
 }
 
-bool TextureHandler::GetTextureHandle( std::wstring textureFilepath, unsigned short& handle )
+void TextureHandler::InsertNewPair(std::string filepath, FlyweightHandle handle)
 {
-	return CheckForDuplicateTextures(textureFilepath, handle);
+	fileNameAndTexturePairings.push_back(std::make_pair<std::string, FlyweightHandle>(filepath, handle));
 }
 
+/*
+bool Mesh::InitMaterials(const aiScene* pScene, const std::string& Filename)
+{
+// Extract the directory part from the file name
+std::string::size_type SlashIndex = Filename.find_last_of("/");
+std::string Dir;
 
+if (SlashIndex == std::string::npos) {
+Dir = ".";
+}
+else if (SlashIndex == 0) {
+Dir = "/";
+}
+else {
+Dir = Filename.substr(0, SlashIndex);
+}
+
+bool Ret = true;
+
+// Initialize the materials
+for (unsigned int i = 0 ; i < pScene->mNumMaterials ; i++) {
+const aiMaterial* pMaterial = pScene->mMaterials[i];
+
+m_Textures[i] = NULL;
+
+if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+aiString Path;
+
+if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
+std::string FullPath = Dir + "/" + Path.data;
+m_Textures[i] = new Texture(GL_TEXTURE_2D, FullPath.c_str());
+
+if (!m_Textures[i]->Load()) {
+printf("Error loading texture '%s'\n", FullPath.c_str());
+delete m_Textures[i];
+m_Textures[i] = NULL;
+Ret = false;
+}
+else {
+printf("Loaded texture '%s'\n", FullPath.c_str());
+}
+}
+}
+
+// Load a white texture in case the model does not include its own texture
+if (!m_Textures[i]) {
+m_Textures[i] = new Texture(GL_TEXTURE_2D, "./white.png");
+
+Ret = m_Textures[i]->Load();
+}
+}
+
+return Ret;
+}
+
+*/

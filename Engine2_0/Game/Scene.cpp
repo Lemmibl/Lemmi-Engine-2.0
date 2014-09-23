@@ -2,9 +2,6 @@
 
 Scene::Scene()
 {
-	testHandle = HandleFunctions::CreateHandle(HandleTypes::AI, 8000);
-
-	unsigned int val = testHandle.key;
 }
 
 Scene::~Scene()

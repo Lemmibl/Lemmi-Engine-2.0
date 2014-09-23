@@ -339,10 +339,10 @@ class recursive_mutex {
 /// }
 /// @endcode
 
-template <class T>
+template <class ObjectType>
 class lock_guard {
   public:
-    typedef T mutex_type;
+    typedef ObjectType mutex_type;
 
     lock_guard() : mMutex(0) {}
 

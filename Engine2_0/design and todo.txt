@@ -66,7 +66,27 @@ struct RenderPass
 	std::function renderpassfunction?
 }
 
-
-
-
 * When/if stuff gets flagged for deletion, add their... entity? ID to remove all relevant objects everywhere
+
+
+
+STD::ARRAY NOT STD::VECTOR!
+
+
+
+
+MeshHandle 		returned from MeshHandler->LoadMesh()
+TextureHandle 	returned from TextureHandler->LoadTexture()
+MaterialHandle 	returned from MaterialHandler->LoadMaterial()
+
+
+A model is an aggregation of mesh handles, texture handles and material handles.
+
+There's a model handler that owns a ptr to mesh handler, a ptr to texture handler and a ptr to material handler.
+
+
+...ModelHandler->LoadModel() return a handle that a renderable can use
+
+ModelHandler->GetModel would return a reference to const model
+ModelHandler->CopyModel could be used to check out a (by value) model for editing
+ModelHandler->InsertNewModel could be used to check it in again

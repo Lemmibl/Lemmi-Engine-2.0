@@ -1,82 +1,49 @@
 #pragma once
-#include <windows.h>
-#include <xnamath.h>
 #include <string>
-#include <d3d11.h>
-#include <fstream>
-#include <vector>
-#include <istream>
-#include <atlcomcli.h>
-#include <sstream>
 
-#include "IndexedMesh.h"
-#include "TextureAndMaterialStructs.h"
-#include "TextureHandler.h"
-#include "MaterialHandler.h"
-#include "DODContainer.h"
-#include "OBJModel.h"
+#include "../../Core systems/Data classes/FlyweightHandle.h"
+#include "../../Core systems/Data classes/DODArray.h"
+
+#include "../Objects/Mesh.h"
+
+using namespace HandleFunctions;
 
 class MeshHandler
 {
-private:
-	struct ModelType
-	{
-		float x, y, z;
-		float textureU, textureV;
-		float normalX, normalY, normalZ;
-		float tangentX, tangentY, tangentZ; //Get rid of?
-		float binormalX, binormalY, binormalZ;
-	};
-
-	struct VertexType
-	{
-		XMFLOAT3 position;
-		XMFLOAT2 texcoords;
-		XMFLOAT3 normal;
-	};
-
-	struct CacheEntry
-	{
-		unsigned int index;
-		CacheEntry* next;
-	};
-
 public:
 	MeshHandler();
 	~MeshHandler();
 
-	bool Initialize(TextureHandler* textureHandler, MaterialHandler* materialHandler);
+	FlyweightHandle LoadMesh(const aiScene* scene, std::string fileName);
 
-	//Returns true on success
-	bool LoadModelFromOBJFile(ID3D11Device* device, std::wstring filepath, OBJModel* outModel);
-
-	//Returns true on success
-	bool LoadIndexedMeshFromTXTFile(ID3D11Device* device, std::wstring filepath, IndexedMesh* outMesh);
-
-	IndexedMesh* GetMesh(unsigned short handle) { return meshes.GetSpecificObject(handle); }
+	const Mesh& GetMesh(FlyweightHandle meshHandle);
 
 private:
-	bool LoadOBJGeometry(ID3D11Device* device, std::wstring filepath, OBJModel* outModel);
-	bool LoadOBJMaterials(ID3D11Device* device, std::wstring filepath, OBJModel* outModel);
-	unsigned int AddVertex(unsigned int hash, VertexType vertex);
-	void DeleteCache();
-
-	bool CheckForDuplicates(std::wstring filepath, OBJModel& potentialReturnHandle);
+	bool LookForDuplicateMeshes(std::string fileName, FlyweightHandle& outHandle);
+	void InsertNewPair(std::string filepath, FlyweightHandle handle);
 
 private:
-	DODContainer<IndexedMesh> meshes;
-	TextureHandler* textureHandler;
-	MaterialHandler* materialHandler;
-	std::wstring meshMatLib; //String to hold our obj material library filename
-
-	std::vector<CacheEntry*> vertexCache;
-	std::vector<std::wstring> textureNameArray;
-	std::vector<std::wstring> meshMaterials;
-
-	//Pairings to check for duplicates whenever we add an object.
-	//If there is a duplicate (filepath is identical) then we just return the handle to that object instead of loading in exactly the same model.
-	std::vector<std::pair<std::wstring, OBJModel>> filePathAndModelPairings;
-
-	std::vector<std::pair<std::wstring, unsigned short>> matNameAndHandlePairings;
+	DODContainer<Mesh, unsigned short> meshes;
+	std::vector<std::pair<std::string, FlyweightHandle>> filePathAndMeshPairings;
 };
 
+/************************************************************************/
+/* 
+
+	Alright, so. Inside meshhandler we want to have a ptr to mathandler and a ptr to texhandler
+	they will receive materials/textures from the loaded model, and insert them into their internal data structures.
+	
+	Each insert function will return a handle, which will be used to access that mat or texture.
+	In the same way, when we load the model, the mesh will be inserted into a data structure here, and it will be accessed externally with a handle.
+
+	How does the renderable come into the picture? I'm not sure yet. 
+	Either we keep a renderable here and return it, or we keep meshes here, and when we've loaded the model we return a new renderable (by value), 
+	containg all the different keys for different objects.
+
+
+	advantage with the latter is that you can save the renderable somewhere, and copy it every time a new guy wants a new renderable..? No, that's stupid.
+	
+	Actually, maybe we just.. assemble a renderable everytime we call loadmodel? so it'll look through all the "has this already been loaded before?" and return all the relevant values...
+
+																		*/
+/************************************************************************/

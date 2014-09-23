@@ -2,8 +2,6 @@
 #include "Camera.h"
 
 #include <glew.h>
-#include "math_3d.h"
-
 #include "../Core systems/Data classes/FlyweightHandle.h"
 using namespace HandleFunctions;
 

@@ -7,7 +7,11 @@ namespace HandleTypes
 	//Don't go above 256 here. We want to stay within the first 8 bits
 	enum
 	{
-		Renderable = 0,
+		Mesh = 0,
+		Texture,
+		Material,
+		Model,
+		Renderable,
 		Collidable,
 		AI
 		//TODO: more types...

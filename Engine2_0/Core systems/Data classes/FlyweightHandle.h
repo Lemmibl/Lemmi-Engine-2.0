@@ -4,16 +4,28 @@
 
 namespace HandleFunctions
 {
-	struct FlyweightHandle
-	{
-		//Inside this key, the first 8 bits are HandleType and the other 24 bits are the actual value bits
-		//2^8 == 256. 2^24 == 16777216 16 mil should be enough keys
-		unsigned int key;
-	};
+	typedef unsigned int FlyweightHandle;
 
-	FlyweightHandle CreateHandle(HandleTypes::Type type, unsigned int key);
-	HandleTypes::Type GetType(const FlyweightHandle& handle);
-	unsigned int GetKey(const FlyweightHandle& handle);
+	inline FlyweightHandle CreateHandle(HandleTypes::Type type, unsigned int key)
+	{
+		FlyweightHandle newHandle;
+
+		//Write type to the first 8 bits.
+		//Shift key value to 8 bits into the key. Leaving the first 8 bits free for type storage				
+		newHandle = ((type & 0xFF) + (key << 8));
+
+		return std::move(newHandle);
+	}
+
+	inline HandleTypes::Type GetType(FlyweightHandle handle)
+	{
+		return std::move(HandleTypes::Type(handle & 0xFF));
+	}
+
+	inline unsigned int GetKey(FlyweightHandle handle)
+	{
+		return (handle >> 8);
+	}
 };
 
 

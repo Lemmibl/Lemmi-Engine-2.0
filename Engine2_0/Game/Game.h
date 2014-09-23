@@ -18,7 +18,15 @@ public:
 
 private:
 	Scene currentScene;
-	TerrainManager terrainManager;
 	GameRenderer gameRenderer;
+
+	TerrainManager terrainManager;
+
+	////Models are aggregate objects consisting of mesh handles, material handles and texture handles
+	//ModelHandler modelHandler;
+
+	//MeshHandler meshHandler;
+	//MaterialHandler materialHandler;
+	//TextureHandler textureHandler
 };
 
