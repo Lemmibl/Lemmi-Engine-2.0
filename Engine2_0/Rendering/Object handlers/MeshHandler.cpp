@@ -12,14 +12,16 @@ MeshHandler::~MeshHandler()
 }
 
 
-FlyweightHandleFunctions::FlyweightHandle MeshHandler::LoadMesh(const aiScene* scene, std::string fileName)
+bool MeshHandler::LoadMesh(const aiScene* scene, std::string fileName, FWHandle& outHandle)
 {
-	FlyweightHandle newHandle = 0;
+	FWHandle newHandle = 0;
 
 	//If we've already loaded and saved this mesh before, we return the handle instead of repeating all the file reading
 	if(LookForDuplicateObject(fileName, newHandle))
 	{
-		return newHandle;
+		outHandle = newHandle;
+
+		return true;
 	}
 
 	unsigned short meshHandle = 0;
@@ -27,21 +29,25 @@ FlyweightHandleFunctions::FlyweightHandle MeshHandler::LoadMesh(const aiScene* s
 	//Create a new mesh, get the handle to that mesh
 	if(objectContainer.AddNewObject(meshHandle))
 	{
-		//Fill it up with submeshes
-		for(unsigned int i = 0; i < scene->mNumMeshes; ++i) 
-		{
-			objectContainer[meshHandle].StoreSubMesh(scene->mMeshes[i]);
-		}
+		//Initialize object
+		objectContainer[meshHandle].StoreMesh(scene);
 
+		//Setup the handle properly
 		newHandle = CreateHandle(HandleTypes::Mesh, meshHandle);
 
+		//Save filename-handle pairing to make sure we don't load the same object several times
 		InsertNewPair(fileName, newHandle);
+
+		//Assign the right value to outhandle
+		outHandle = newHandle;
+		
+		return true;
 	}
 
-	return newHandle;
+	return false;
 }
 
-const Mesh& MeshHandler::GetMesh( FlyweightHandle meshHandle )
+Mesh& MeshHandler::GetMesh( FWHandle meshHandle )
 {
-	return objectContainer.GetSpecificObject(FlyweightHandleFunctions::GetKey(meshHandle));
+	return objectContainer.GetSpecificObject(FlyweightFunctionality::GetKey(meshHandle));
 }

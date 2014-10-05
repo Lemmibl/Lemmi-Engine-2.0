@@ -1,6 +1,8 @@
 #pragma once
-//#include "Libraries/VisualLeakDetector/include/vld.h"
 #include "Core systems/EngineCore.h"
+
+#include <easylogging++.h>
+_INITIALIZE_EASYLOGGINGPP
 
 int main(int argc, char* argv[])
 {

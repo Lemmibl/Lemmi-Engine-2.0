@@ -1,84 +1,115 @@
 #include "MaterialHandler.h"
 
-
 MaterialHandler::MaterialHandler()
-: HandlerBaseClass(64)
+	: HandlerBaseClass(64)
 {
+	MaterialStruct defaultMaterial;
+	defaultMaterial.ambient		= glm::vec3(0.5f, 0.5f, 0.5f);
+	defaultMaterial.diffuse		= glm::vec3(1.0f, 1.0f, 1.0f);
+	defaultMaterial.specular	= glm::vec3(0.2f, 0.2f, 0.2f);
+	defaultMaterial.roughness = 8.0f;
+
+	FWHandle handle;
+	StoreMaterial(defaultMaterial, "DefaultMaterial", handle);
 }
 
 MaterialHandler::~MaterialHandler()
 {
 }
 
-FlyweightHandleFunctions::FlyweightHandle MaterialHandler::LoadMaterial( std::string filename, aiMaterial* material )
+bool MaterialHandler::LoadMaterial(aiMaterial* material, std::string filename, FWHandle& outHandle)
 {
-	FlyweightHandle returnHandle;
-
-	if(LookForDuplicateObject(filename, returnHandle))
+	if(LookForDuplicateObject(filename, outHandle))
 	{
-		return returnHandle;
+		return true;
 	}
 
+	unsigned short index;
+
+	if(objectContainer.AddNewObject(index))
+	{
+		//Get reference to the material we just created, so that we can write to it.
+		auto& newMaterial = objectContainer[index];
+
+		glm::vec3 tempVector(0.8f, 0.8f, 0.8f);
+
+		aiColor4D diffuse;
+		if(AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_DIFFUSE, &diffuse))
+		{
+			Color4ToFloat3(diffuse, tempVector);
+		}
+
+		newMaterial.material.diffuse = tempVector;
 
 
-	InsertNewPair(filename, returnHandle);
+		tempVector = glm::vec3(0.2f, 0.2f, 0.2f);
+		aiColor4D ambient;
+		if(AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_AMBIENT, &ambient))
+		{
+			Color4ToFloat3(ambient, tempVector);
+		}
 
-	return returnHandle;
+		newMaterial.material.ambient = tempVector;
+
+		tempVector =  glm::vec3(0.0f, 0.0f, 0.0f);
+		aiColor4D specular;
+		if(AI_SUCCESS == aiGetMaterialColor(material, AI_MATKEY_COLOR_SPECULAR, &specular))
+		{
+			Color4ToFloat3(specular, tempVector);
+		}
+
+		newMaterial.material.specular = tempVector;
+
+
+		newMaterial.material.roughness = 8.0f;
+
+		float shininess;
+		unsigned int max;
+		if(AI_SUCCESS == aiGetMaterialFloatArray(material, AI_MATKEY_SHININESS, &shininess, &max))
+		{
+			newMaterial.material.roughness = shininess;
+		}
+
+		glGenBuffers(1,					&(newMaterial.uniformBlockIndex));
+		glBindBuffer(GL_UNIFORM_BUFFER, newMaterial.uniformBlockIndex);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(newMaterial.material), (void *)(&newMaterial.material), GL_STATIC_DRAW);
+
+		outHandle = CreateHandle(HandleTypes::Material, index);
+
+		InsertNewPair(filename, outHandle);
+
+		return true;
+	}
+
+	return false;
 }
 
-/*
-bool Mesh::InitMaterials(const aiScene* pScene, const std::string& Filename)
+bool MaterialHandler::StoreMaterial( MaterialStruct material, std::string materialName, FWHandle& outHandle )
 {
-// Extract the directory part from the file name
-std::string::size_type SlashIndex = Filename.find_last_of("/");
-std::string Dir;
+	if(LookForDuplicateObject(materialName, outHandle))
+	{
+		return true;
+	}
 
-if (SlashIndex == std::string::npos) {
-Dir = ".";
-}
-else if (SlashIndex == 0) {
-Dir = "/";
-}
-else {
-Dir = Filename.substr(0, SlashIndex);
-}
+	unsigned short index;
 
-bool Ret = true;
+	if(objectContainer.AddNewObject(index))
+	{
+		//Get reference to the material we just created, so that we can write to it.
+		auto& newMaterial = objectContainer[index];
 
-// Initialize the materials
-for (unsigned int i = 0 ; i < pScene->mNumMaterials ; i++) {
-const aiMaterial* pMaterial = pScene->mMaterials[i];
+		//Just insert the values
+		newMaterial.material = material;
 
-m_Textures[i] = NULL;
+		//Create handle
+		outHandle = CreateHandle(HandleTypes::Material, index);
 
-if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
-aiString Path;
+		//Save handle and name pair
+		InsertNewPair(materialName, outHandle);
 
-if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-std::string FullPath = Dir + "/" + Path.data;
-m_Textures[i] = new Texture(GL_TEXTURE_2D, FullPath.c_str());
+		return true;
+	}
 
-if (!m_Textures[i]->Load()) {
-printf("Error loading texture '%s'\n", FullPath.c_str());
-delete m_Textures[i];
-m_Textures[i] = NULL;
-Ret = false;
-}
-else {
-printf("Loaded texture '%s'\n", FullPath.c_str());
-}
-}
+	return false;
 }
 
-// Load a white texture in case the model does not include its own texture
-if (!m_Textures[i]) {
-m_Textures[i] = new Texture(GL_TEXTURE_2D, "./white.png");
-
-Ret = m_Textures[i]->Load();
-}
-}
-
-return Ret;
-}
-
-*/

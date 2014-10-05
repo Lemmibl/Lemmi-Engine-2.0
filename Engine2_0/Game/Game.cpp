@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include <easylogging++.h>
+
 Game::Game()
 {
 }
@@ -17,19 +19,23 @@ bool Game::Shutdown()
 
 bool Game::Initialize()
 {
-	if(!gameRenderer.Initialize())
+	if(!modelHandler.Initialize(&materialHandler, &meshHandler, &textureHandler))
+	{
+		LOG(ERROR) << ("Couldn't initialize modelHandler in Scene.cpp!");
+	}
+
+	currentScene.Load(&modelHandler);
+
+	if(!gameRenderer.Initialize(&materialHandler, &meshHandler, &textureHandler))
 	{
 		return false;
 	}
-
-	currentScene.Load();
 
 	return true;
 }
 
 bool Game::Update( double deltaTime )
 {
-	
 	//Update last
 	gameRenderer.Update(deltaTime);
 	

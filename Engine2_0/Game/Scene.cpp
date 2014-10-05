@@ -1,5 +1,8 @@
 #include "Scene.h"
 
+#include <easylogging++.h>
+#include "../Rendering/Object handlers/ModelHandler.h"
+
 Scene::Scene()
 {
 }
@@ -8,20 +11,29 @@ Scene::~Scene()
 {
 }
 
-void Scene::Load()
+void Scene::Load(ModelHandler* modelHandlerPtr)
 {
-	//We allocate a GLuint in the global part of the program to store the handle of the vertex buffer object. 
-	//You will see later that most (if not all) OpenGL objects are accessed via a variable of GLuint type.
+	modelHandler = modelHandlerPtr;
 
-	/*OpenGL defines several glGen* functions for generating objects of various types. 
-	They often take two parameters - the first one specifies the number of objects you want 
-	to create and the second is the address of an array of GLuints to store the handles that 
-	the driver allocates for you (make sure the array is large enough to handle your request!). 
+	std::string eucalyptus = "eucalyptus.obj";
+	std::string sphere = "sphere.obj";
+	std::string pine = "pineish.obj";
 
-	Future calls to this function will not generate the same object handles unless you delete them first 
-	with glDeleteBuffers. Note that at this point you don't specify what you intend to do with 
-	the buffers so they can be regarded as "generic". This is the job of the next function.
-	*/
+	std::string activeModel = eucalyptus;
+
+	for(unsigned int i = 0; i < 10; ++i)
+	{
+		FWHandle modelHandle;
+
+		if(!modelHandler->LoadModel(activeModel, modelHandle))
+		{
+			LOG(ERROR) << ("Couldn't load file " + activeModel + " in modelHandler!");
+		}
+		else
+		{
+			renderables.push_back(modelHandler->GetModel(modelHandle));
+		}
+	}
 
 	points[0] = 0.0f;
 	points[1] = 0.5f;
@@ -40,21 +52,22 @@ void Scene::Load()
 
 	vertexAttributeObject = 0;
 	glGenVertexArrays (1, &vertexAttributeObject);
-	glBindVertexArray (vertexAttributeObject);
+	glBindVertexArray(vertexAttributeObject);
 	glEnableVertexAttribArray(0);
-	glBindBuffer (GL_ARRAY_BUFFER, vertexBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
 	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
-//void Scene::BindScene()
-//{
-//	// Generate 1 buffer, put the resulting identifier in vertexbuffer
-//	glGenBuffers(1, &vertexbuffer);
-//
-//	// The following commands will talk about our 'vertexbuffer' buffer
-//	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-//
-//	// Give our vertices to OpenGL.
-//	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-//
-//}
+void Scene::Update( double deltaTime )
+{
+	for(unsigned int i = 0; i < renderables.size(); ++i)
+	{
+		/*
+		Possibly do culling first
+		*/
+
+		/*
+		Sort all submeshes? Renderables?
+		*/
+	}
+}

@@ -1,0 +1,12 @@
+
+newmtl wood08png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+map_Kd wood08.png
+
+newmtl leaf25png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+map_Kd leaf25.png

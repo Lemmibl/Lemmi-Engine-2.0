@@ -1,17 +1,30 @@
 #pragma once
+#include <glew.h>
+#include <GLFW/glfw3.h>
+
 #include <vector>
 #include <memory>
 #include <functional>
 
-#include <glew.h>
-#include <GLFW/glfw3.h>
-#include "math_3d.h"
-
 #include "Object handlers/ShaderHandler.h"
-#include "Objects/ShaderTypes.h"
 #include "../Game/Scene.h"
 
+#include "ShaderUniformStructs.h"
+#include "Shader code/OBJShader.h"
+
+// glm::vec3, glm::vec4, glm::ivec4, glm::mat4
+#include <glm/glm.hpp>
+
+// glm::translate, glm::rotate, glm::scale, glm::perspective
+#include <glm/gtc/matrix_transform.hpp>
+
+// glm::value_ptr
+#include <glm/gtc/type_ptr.hpp> 
+
 class Scene;
+class MaterialHandler;
+class MeshHandler;
+class TextureHandler;
 
 class GameRenderer
 {
@@ -19,7 +32,7 @@ public:
 	GameRenderer();
 	~GameRenderer();
 
-	bool Initialize();
+	bool Initialize(MaterialHandler* mtlHandlerPtr, MeshHandler* meshHandlerPtr, TextureHandler* texHandlerPtr);
 
 	void Update(double deltaTime);
 	void Render(Scene* scene);
@@ -32,7 +45,18 @@ private:
 	GLFWwindow* glfwWindow;
 	int screenWidth, screenHeight;
 	float ratio;
+	double rotation;
 
 	std::vector<std::function<void(Scene*)>> renderPasses;
 	ShaderHandler shaderManager;
+
+	MaterialHandler* materialHandler;
+	MeshHandler* meshHandler; 
+	TextureHandler* textureHandler;
+
+	Matrices wvpMatrixStruct;
+	GLuint matrixStructShaderIndex, matrixBindingIndex, matrixUBO;
+	OBJShader* objShader;
+
+	glm::mat4x4 scaleMatrix;
 };

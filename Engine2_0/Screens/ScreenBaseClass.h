@@ -1,4 +1,9 @@
 #pragma once
+#include <glew.h>
+#include <GLFW/glfw3.h>
+
+#include "CEGUI/CEGUI.h"
+
 #include "../Libraries/Events/SchladetschEvents.h"
 #include "ScreenStates.h"
 

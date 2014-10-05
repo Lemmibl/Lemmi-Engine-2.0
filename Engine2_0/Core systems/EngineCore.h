@@ -1,7 +1,11 @@
 #pragma once
 
+#include <easylogging++.h>
+
 //Include glew before glfw: http://www.glfw.org/faq.html#2_15
+#include <windows.h>
 #include <glew.h>
+#include <GLFW/glfw3.h>
 
 /************************************************************************/
 /* This class is the very core of the engine. Every major system will   
@@ -11,8 +15,6 @@
 #include "../Screens/ScreenManager.h"
 #include "InputManager.h"
 
-//Include glfw last! I can't remember why but the manual tells you to do so.
-#include <GLFW/glfw3.h>
 
 class EngineCore
 {
@@ -30,6 +32,7 @@ private:
 	bool Update();
 	void Render();
 
+	void InitializeErrorLogger();
 	bool InitializeGUI();
 	bool LoadSettings();
 

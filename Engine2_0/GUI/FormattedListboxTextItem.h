@@ -1,4 +1,5 @@
 #pragma once
+#include <GLFW/glfw3.h>
 #include "CEGUI/CEGUI.h"
 
 namespace CEGUI

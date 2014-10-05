@@ -1,6 +1,5 @@
 #include "EngineCore.h"
 
-
 EngineCore::EngineCore()
 	//In the future these will be loaded from... say, a config file
 	: windowWidth(800.0f), windowHeight(600.0f),
@@ -29,6 +28,8 @@ bool EngineCore::InitializeSystems()
 	//Save a ptr to handler to save a few instructions on all those ::GetInstance() calls that happen in the update loop.
 	inputManager = &InputManager::GetInstance(); 
 
+	InitializeErrorLogger();
+
 	if(!LoadSettings())
 	{
 		return false;
@@ -44,6 +45,13 @@ bool EngineCore::InitializeSystems()
 	return true;
 }
 
+void EngineCore::InitializeErrorLogger()
+{
+	easyloggingpp::Configurations confFromFile("../Engine2_0/Libraries/EasyLogging++/configFile.conf");  // Load configuration from file
+	easyloggingpp::Loggers::reconfigureAllLoggers(confFromFile); // Re-configures all the loggers to current configuration file
+	easyloggingpp::Loggers::setDefaultConfigurations(confFromFile, true);
+}
+
 
 bool EngineCore::InitializeGUI()
 {
@@ -55,6 +63,8 @@ bool EngineCore::InitializeGUI()
 	{
 		return false;
 	}
+
+	 glfwDefaultWindowHints();
 
 	/* Create a windowed mode window and its OpenGL context */
 	glfwWindow = glfwCreateWindow(static_cast<int>(windowWidth), static_cast<int>(windowHeight), "Engine 2.0", NULL, NULL);
@@ -71,7 +81,7 @@ bool EngineCore::InitializeGUI()
 	glewExperimental = GL_TRUE;
 
 	//Initialize GLEW
-	if (glewInit() != GLEW_OK)
+	if(glewInit() != GLEW_OK)
 	{
 		return false;
 	}

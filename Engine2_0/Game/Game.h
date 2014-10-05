@@ -3,6 +3,10 @@
 #include "../Terrain/TerrainManager.h"
 #include "Scene.h"
 
+#include "../Rendering/Object handlers/MaterialHandler.h"
+#include "../Rendering/Object handlers/MeshHandler.h"
+#include "../Rendering/Object handlers/TextureHandler.h"
+#include "../Rendering/Object handlers/ModelHandler.h"
 
 class Game
 {
@@ -22,11 +26,11 @@ private:
 
 	TerrainManager terrainManager;
 
-	////Models are aggregate objects consisting of mesh handles, material handles and texture handles
-	//ModelHandler modelHandler;
+	//Models are aggregate objects consisting of mesh handles, material handles and texture handles
+	ModelHandler modelHandler;
 
-	//MeshHandler meshHandler;
-	//MaterialHandler materialHandler;
-	//TextureHandler textureHandler
+	MaterialHandler materialHandler;
+	MeshHandler meshHandler;
+	TextureHandler textureHandler;
 };
 

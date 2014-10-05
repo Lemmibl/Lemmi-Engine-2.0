@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Core systems/Data classes/FlyweightHandle.h"
+#include "../../Core systems/Data classes/FWHandle.h"
 
 using namespace HandleFunctions;
 
@@ -9,8 +9,8 @@ struct Renderable
 	unsigned short renderPasses; //One pass per bit..?
 
 	//Handle to the transform for this renderable
-	FlyweightHandle transformHandle;
+	FWHandle transformHandle;
 
 	//And handle to the actual model we'll be rendering
-	FlyweightHandle modelHandle;
+	FWHandle modelHandle;
 };

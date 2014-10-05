@@ -1,9 +1,16 @@
 #pragma once
-#include "Camera.h"
-
+#include <windows.h>
 #include <glew.h>
-#include "../Core systems/Data classes/FlyweightHandle.h"
-using namespace FlyweightHandleFunctions;
+#include <GLFW/glfw3.h>
+
+#include <vector>
+#include "Camera.h"
+#include "../Core systems/Data classes/FWHandle.h"
+#include "../Rendering/Objects/ModelInstance.h"
+
+using namespace FlyweightFunctionality;
+
+class ModelHandler;
 
 class Scene
 {
@@ -16,16 +23,17 @@ public:
 	~Scene();
 
 	//In the future we'll probably have, like, a string to specify a level name or something along those lines. A random seed, maybe.
-	void Load();
+	void Load(ModelHandler* modelHandler);
 
-private:
-	//void BindScene();
+	void Update(double deltaTime);
 
 private:
 	GLuint vertexBufferObject;
 	GLuint vertexAttributeObject;
 	Camera playerCamera;
-	FlyweightHandle testHandle;
+	ModelHandler* modelHandler;
+
+	std::vector<ModelInstance> renderables;
 
 	float points[9];
 };

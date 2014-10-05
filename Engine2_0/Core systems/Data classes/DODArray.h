@@ -15,8 +15,9 @@ class DODContainer
 	/************************************************************************/
 
 private:
-	static const IndexType DummyValue = sizeof(IndexType);
-	static const IndexType NumericalLimitOfObjects = DummyValue-1;
+	//Eh, I know it's a somewhat unorthodox naming, but I feel it's descriptive.
+	static const IndexType OBJECT_IS_EMPTY = sizeof(IndexType);
+	static const IndexType MAX_OBJECT_LIMIT = OBJECT_IS_EMPTY-1;
 
 private:
 	struct ContainerObject
@@ -47,7 +48,7 @@ public:
 		for(IndexType i = 0; i < maxObjects; ++i)
 		{
 			indexArray[i].next = i+1; //Currently just pointing to next, but this can/will change.
-			indexArray[i].index = DummyValue; //Just a dummy value...
+			indexArray[i].index = OBJECT_IS_EMPTY; //Just a dummy value...
 		}
 
 		freelist_dequeue = 0;
@@ -72,6 +73,16 @@ public:
 	IndexType GetActiveObjectCount() 
 	{ 
 		return activeObjects; 
+	}
+
+	bool IsValid(IndexType handle)
+	{
+		if(indexArray[handle].index != OBJECT_IS_EMPTY)
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	//For iteration!
@@ -126,7 +137,7 @@ public:
 		indexArray[object.id].index = idx.index;
 
 		//And null index to the deleted object
-		idx.index = DummyValue;
+		idx.index = OBJECT_IS_EMPTY;
 
 		//Add the handle to the free list again
 		indexArray[freelist_enqueue].next = externalHandle;

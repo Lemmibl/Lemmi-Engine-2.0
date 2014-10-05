@@ -1,4 +1,5 @@
 #pragma once
+#include <GLFW/glfw3.h>
 #include <string>
 
 //Will handle everything CEGUI. Initialization, lifetime, updating.

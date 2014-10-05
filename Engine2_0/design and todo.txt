@@ -1,9 +1,10 @@
 TODO:
+
+* Change shader system to use polyporphism and generic Shader* ptrs. ShaderManager would be a .... std::map<Shader*, shaderEnum> ?
+* Shader* would have a virtual destructor, a pure virtual Render(Scene*) and a pure virtual Setup(Scene*)...?
 * Camera.
 * A game menu? Like.. Start Game / Load Game / Configure Parameters
-* Look into ASSIMP for loading models. Try getting a tree rendered? http://www.nexcius.net/2014/04/13/loading-meshes-using-assimp-in-opengl/
 * Remake terrainManager from... scratch? Reuse all the good parts. Plenty that works just fine. Clean up the multithreaded function though. Look into multithreaded openGL contexts.
-* Make a logs folder and configure CEGUI to write logs to that folder. Also set up a separate log file for OUR stuff as opposed to printing everything to cegui.log
 
 
 

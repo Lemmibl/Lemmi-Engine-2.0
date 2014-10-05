@@ -1,8 +1,6 @@
 #pragma once
 #include "ScreenBaseClass.h"
 
-#include "CEGUI/CEGUI.h"
-
 class MainMenuScreen : public ScreenBaseClass
 {
 public:

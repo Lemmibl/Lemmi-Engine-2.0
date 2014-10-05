@@ -1,11 +1,10 @@
 #include "ScreenManager.h"
 
 #include "ScreenBaseClass.h"
+
 #include "MainMenuScreen.h"
 #include "GameplayScreen.h"
 #include "OptionsScreen.h"
-
-#include <GLFW/glfw3.h>
 
 ScreenManager::ScreenManager()
 : running(true),

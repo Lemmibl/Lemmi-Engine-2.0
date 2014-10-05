@@ -14,8 +14,8 @@ public:
 	MeshHandler();
 	~MeshHandler();
 
-	FlyweightHandle LoadMesh(const aiScene* scene, std::string fileName);
-	const Mesh& GetMesh(FlyweightHandle meshHandle);
+	bool LoadMesh(const aiScene* scene, std::string fileName, FWHandle& outHandle);
+	Mesh& GetMesh(FWHandle meshHandle);
 };
 
 /************************************************************************/

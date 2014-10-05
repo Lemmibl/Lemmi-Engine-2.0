@@ -1,5 +1,6 @@
 #include "CEGUIWrapper.h"
 
+#pragma once
 #include "CEGUI/CEGUI.h"
 #include "CEGUI/CommonDialogs/ColourPicker/ColourPicker.h"
 #include "CEGUI/CommonDialogs/ColourPicker/Controls.h"

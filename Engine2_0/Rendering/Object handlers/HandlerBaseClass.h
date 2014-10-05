@@ -1,13 +1,14 @@
 #pragma once
 
 //Include some things that are needed for all handler classes
+#include "../../Core systems/Data classes/DODArray.h"
+#include "../../Core systems/Data classes/FWHandle.h"
+
 #include <string>
 #include <vector>
-#include "../../Core systems/Data classes/DODArray.h"
-#include "../../Core systems/Data classes/FlyweightHandle.h"
 
 //For FlyweightHandle definitions + functions
-using namespace FlyweightHandleFunctions;
+using namespace FlyweightFunctionality;
 
 
 template<typename ContainerObjectType, typename ContainerKeyType>
@@ -17,7 +18,6 @@ public:
 	HandlerBaseClass(ContainerKeyType containerSize)
 	: objectContainer(containerSize)
 	{
-
 	}
 
 	virtual ~HandlerBaseClass()
@@ -26,7 +26,7 @@ public:
 	}
 
 protected:
-	bool LookForDuplicateObject(std::string fileName, FlyweightHandle& outHandle)
+	bool LookForDuplicateObject(std::string fileName, FWHandle& outHandle)
 	{
 		//For each mesh that we've stored in our DODArray
 		for(unsigned int i = 0; i < filenameAndObjectPairings.size(); ++i)
@@ -46,12 +46,12 @@ protected:
 		return false;
 	}
 
-	void InsertNewPair(std::string filename, FlyweightHandle handle)
+	void InsertNewPair(std::string filename, FWHandle handle)
 	{
-		filenameAndObjectPairings.push_back(std::make_pair<std::string, FlyweightHandle>(filename, handle));
+		filenameAndObjectPairings.push_back(std::make_pair<std::string, FWHandle>(filename, handle));
 	}
 
 protected:
 	DODContainer<ContainerObjectType, ContainerKeyType> objectContainer;
-	std::vector<std::pair<std::string, FlyweightHandle>> filenameAndObjectPairings;
+	std::vector<std::pair<std::string, FWHandle>> filenameAndObjectPairings;
 };

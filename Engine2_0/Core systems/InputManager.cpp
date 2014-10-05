@@ -1,6 +1,5 @@
 #include "InputManager.h"
 
-
 InputManager::InputManager()	
 	:	mouseSensitivity(1.0),
 	glfwWindow(nullptr),

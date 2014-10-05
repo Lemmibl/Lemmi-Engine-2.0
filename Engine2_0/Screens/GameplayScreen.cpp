@@ -1,7 +1,5 @@
 #include "GameplayScreen.h"
 
-#include "../Game/Game.h"
-
 GameplayScreen::GameplayScreen()
 	: ScreenBaseClass(),
 	currentGame(nullptr)
@@ -72,9 +70,12 @@ bool GameplayScreen::Update( double deltaTime )
 		stateChangeEvent(ScreenStates::MainMenu);
 	}
 
-	if(!currentGame->Update(deltaTime))
+	if(IsActive())
 	{
-		return false;
+		if(!currentGame->Update(deltaTime))
+		{
+			return false;
+		}
 	}
 
 	return true;
@@ -83,9 +84,12 @@ bool GameplayScreen::Update( double deltaTime )
 
 bool GameplayScreen::Render( double deltaTime )
 {
-	if(!currentGame->Render(deltaTime))
+	if(IsActive())
 	{
-		return false;
+		if(!currentGame->Render(deltaTime))
+		{
+			return false;
+		}
 	}
 
 	return true;

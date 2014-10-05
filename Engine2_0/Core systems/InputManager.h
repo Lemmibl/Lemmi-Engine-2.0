@@ -1,7 +1,7 @@
 #pragma once
-#include "CEGUI/CEGUI.h"
-
+#include <windows.h>
 #include <GLFW/glfw3.h>
+#include "CEGUI/CEGUI.h"
 
 //Currently, this is just a hackjob wrapper that distributes glfw events further down to other systems that use the input.
 class InputManager
