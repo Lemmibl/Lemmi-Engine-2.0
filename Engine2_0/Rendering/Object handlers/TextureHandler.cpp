@@ -1,6 +1,7 @@
 #include "TextureHandler.h"
 
 #include <SOIL2.h>
+#include <stb_image.h>
 #include <easylogging++.h>
 
 static const std::string baseFilePath = "../Engine2_0/Data/Textures/";
@@ -10,7 +11,7 @@ TextureHandler::TextureHandler()
 {	
 	if(!LoadTexture("placeholder.tga", placeHolderTexture))
 	{
-			LOG(ERROR) << "Couldn't load placeholder texture in TextureHandler constructor.";
+		LOG(ERROR) << "Couldn't load placeholder texture in TextureHandler constructor.";
 	}
 }
 
@@ -27,7 +28,7 @@ bool TextureHandler::LoadTextureAssimp(aiMaterial* material, std::string filenam
 	outHandle = placeHolderTexture;
 
 	//See if we can fetch a diffuse texture from the material
-	if(material->GetTexture(aiTextureType_DIFFUSE, textureIndex, &texname, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) 
+	if(AI_SUCCESS == material->GetTexture(aiTextureType_DIFFUSE, textureIndex, &texname, NULL, NULL, NULL, NULL, NULL)) 
 	{
 		std::string textureName(texname.C_Str());
 
@@ -51,33 +52,43 @@ bool TextureHandler::LoadTexture( std::string filename, FWHandle& outHandle )
 	{
 		std::string fullPath = baseFilePath + filename;
 
-		//Load texture and automatically store it inside openGL's ... innards.
-		GLuint oglTexHandle = SOIL_load_OGL_texture
-		(
-			fullPath.c_str(),
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_TEXTURE_REPEATS|SOIL_FLAG_GL_MIPMAPS
-		);
+		int width, height, channels;
 
-		glBindTexture(GL_TEXTURE_2D, oglTexHandle);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		unsigned char* data = SOIL_load_image(fullPath.c_str(), &width, &height, &channels, SOIL_LOAD_AUTO);
 
-		Texture newTexture;
+		unsigned int oglTexHandle = 0;
 
-		//I need to use initialize function instead of constructor because my container class doesn't handle things with no default constructors
-		newTexture.Initialize(GL_TEXTURE_2D, oglTexHandle);
+		if(data)
+		{
+			oglTexHandle = SOIL_create_OGL_texture(data, &width, &height, channels, SOIL_CREATE_NEW_ID, SOIL_FLAG_TEXTURE_REPEATS|SOIL_FLAG_GL_MIPMAPS);
+		}
 
-		//Save it in our container.			//Create a texture object. Very thin wrapper around it all.
-		objectContainer[newTextureHandle] = newTexture;
+		SOIL_free_image_data( data );
 
-		//Make sure we encode the handle properly
-		outHandle = CreateHandle(HandleTypes::Texture, newTextureHandle);
 
-		InsertNewPair(filename, outHandle);
+		if(0 != oglTexHandle)
+		{
+			glBindTexture(GL_TEXTURE_2D, oglTexHandle);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		return true;
+			Texture newTexture;
+
+			//I need to use initialize function instead of constructor because my container class doesn't handle things with no default constructors
+			newTexture.Initialize(GL_TEXTURE_2D, oglTexHandle);
+
+			//Save it in our container.			//Create a texture object. Very thin wrapper around it all.
+			objectContainer[newTextureHandle] = newTexture;
+
+			//Make sure we encode the handle properly
+			outHandle = CreateHandle(HandleTypes::Texture, newTextureHandle);
+
+			InsertNewPair(filename, outHandle);
+
+			return true;
+		}
 	}
 
 	return false;
@@ -86,7 +97,7 @@ bool TextureHandler::LoadTexture( std::string filename, FWHandle& outHandle )
 
 bool TextureHandler::GetTexture(FWHandle handle, Texture& outTexture)
 {
-	unsigned int key = FlyweightFunctionality::GetKey(handle);
+	unsigned short key = FlyweightFunctionality::GetKey(handle);
 
 	//Look for the object
 	if(objectContainer.IsValid(key))

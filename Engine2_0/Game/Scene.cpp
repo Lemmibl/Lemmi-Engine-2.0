@@ -15,11 +15,14 @@ void Scene::Load(ModelHandler* modelHandlerPtr)
 {
 	modelHandler = modelHandlerPtr;
 
-	std::string eucalyptus = "eucalyptus.obj";
-	std::string sphere = "sphere.obj";
-	std::string pine = "pineish.obj";
+	modelFilepaths.push_back("sphere.obj");
+	modelFilepaths.push_back("Eucalyptus.obj");
+	modelFilepaths.push_back("eucalyptus2.obj");
+	modelFilepaths.push_back("eucalyptus3.obj");
+	modelFilepaths.push_back("pineish.obj");
+	modelFilepaths.push_back("bush.obj");
 
-	std::string activeModel = eucalyptus;
+	std::string activeModel = modelFilepaths[1];
 
 	for(unsigned int i = 0; i < 10; ++i)
 	{

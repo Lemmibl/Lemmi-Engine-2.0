@@ -26,9 +26,9 @@ public:
 	bool Run();
 
 	bool InitializeSystems();
-	
-private:
 	void Shutdown();
+
+private:
 	bool Update();
 	void Render();
 

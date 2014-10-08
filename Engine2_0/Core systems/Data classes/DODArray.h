@@ -2,6 +2,7 @@
 //http://bitsquid.blogspot.se/2011/09/managing-decoupling-part-4-id-lookup.html
 
 #pragma once
+#include <limits>
 
 //So ObjectType is what the container will be holding,
 //and IndexType is what type of object we will be using to keep track of everything,
@@ -13,11 +14,6 @@ class DODContainer
 	/************************************************************************/
 	/*						Various definitions                             */
 	/************************************************************************/
-
-private:
-	//Eh, I know it's a somewhat unorthodox naming, but I feel it's descriptive.
-	static const IndexType OBJECT_IS_EMPTY = sizeof(IndexType);
-	static const IndexType MAX_OBJECT_LIMIT = OBJECT_IS_EMPTY-1;
 
 private:
 	struct ContainerObject
@@ -38,6 +34,7 @@ public:
 	/*                    Constructors and destructors                      */
 	/************************************************************************/
 	DODContainer(IndexType size)
+	: OBJECT_IS_EMPTY(std::numeric_limits<IndexType>::max())
 	{
 		maxObjects = size;
 		activeObjects = 0;
@@ -150,6 +147,7 @@ private:
 	/*							Variables                                   */
 	/************************************************************************/
 	IndexType maxObjects;
+	const IndexType OBJECT_IS_EMPTY;
 	
 	IndexType activeObjects;
 	IndexType freelist_enqueue, freelist_dequeue;

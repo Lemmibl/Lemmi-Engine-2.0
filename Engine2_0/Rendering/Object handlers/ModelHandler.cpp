@@ -56,7 +56,7 @@ bool ModelHandler::LoadModel(std::string fileName, FWHandle& outHandle)
 		//Import model file
 		Assimp::Importer loader;
 
-		const aiScene* scene = loader.ReadFile((baseFilepath+fileName), aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs); //|aiProcess_FlipWindingOrder
+		const aiScene* scene = loader.ReadFile((baseFilepath+fileName), aiProcess_Triangulate|aiProcess_FlipUVs); // | aiProcess_GenSmoothNormals | 
 
 		if(scene != nullptr)
 		{

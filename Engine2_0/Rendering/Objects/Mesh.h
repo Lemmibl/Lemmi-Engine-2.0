@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "../../Core systems/Data classes/FWHandle.h"
-
 using namespace FlyweightFunctionality;
 
 class Mesh
@@ -18,19 +17,19 @@ friend class GameRenderer;
 private:
 	struct SubMesh 
 	{
-		unsigned int baseVertex;
-		unsigned int baseIndex;
-		unsigned int numIndices;
+		GLint baseVertex;
+		GLuint baseIndex;
+		GLsizei numIndices;
 		FWHandle materialIndex;
 		FWHandle textureIndex;
 	};
 
 	enum SubMeshBufferIndex : GLuint
 	{
-		POSITION_BUFFER = 0, 
+		INDEX_BUFFER = 0,
+		POSITION_BUFFER,
 		NORMAL_BUFFER, 
-		TEXCOORD_BUFFER,
-		INDEX_BUFFER
+		TEXCOORD_BUFFER
 	};
 
 public:
@@ -43,13 +42,13 @@ public:
 
 
 private:
-	void LoadSubMesh(	const aiMesh* paiMesh, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, 
-						std::vector<glm::vec2>& texCoords, std::vector<unsigned int>& indices);
+	void LoadSubMesh(unsigned int submeshIndex,	const aiMesh* paiMesh, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, 
+						std::vector<glm::vec2>& texCoords, std::vector<GLushort>& indices);
 
 private:
 	static const unsigned int bufferSize = 4;
+	GLuint buffers[bufferSize];
 
 	GLuint vao;
-	GLuint buffers[bufferSize];
 	std::vector<SubMesh> submeshes;
 };

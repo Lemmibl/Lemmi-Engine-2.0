@@ -11,16 +11,22 @@ public:
 
 	virtual	bool Initialize();
 	void SetupBuffers(GLuint matrixUBO, GLuint materialUBO);
-	void UpdateMatrixBuffer(Matrices& matrixStruct, GLuint matrixUBO);
-	void UpdateMaterialBuffer(MaterialStruct& materialStruct, GLuint materialUBO);
-
 	void BindBuffers(GLuint matrixUBO, GLuint materialUBO);
 
+	void BindTextureSlot(GLuint textureID);
+
+	virtual void ResetState();
+
 private:
+	GLuint sampler;
+
 	GLuint matrixStructShaderIndex;
 	GLuint matrixBindingSlot;
 
 	GLuint materialStructShaderIndex;
 	GLuint materialBindingSlot;
+
+	GLint textureShaderIndex;
+	GLuint diffuseTextureBindingSlot;
 };
 

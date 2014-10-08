@@ -1,7 +1,5 @@
-//layout (std140) uniform Matrices 
-
 #ifdef VERTEX_SHADER
-#version 330
+#version 400
 
 layout(std140) uniform Matrices
 {
@@ -10,20 +8,20 @@ layout(std140) uniform Matrices
 	mat4 projMatrix;
 };
 
-in vec3 position;
-in vec3 normal;
-in vec2 texCoord;
+layout(location=0) in vec3 VertexPosition;
+layout(location=1) in vec3 VertexNormal;
+layout(location=2) in vec2 VertexTexCoord;
 
-out vec4 vertexPos;
-out vec2 TexCoord;
-out vec3 Normal;
+out vec3 OutNormal;
+out vec2 OutTexCoord;
+
 
 void main()
 {
-	Normal = normalize(vec3(viewMatrix * modelMatrix * vec4(normal, 0.0)));
-	TexCoord = vec2(texCoord);
-	vertexPos = projMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
-	gl_Position = vertexPos;
+	gl_Position = projMatrix * viewMatrix * modelMatrix * vec4(VertexPosition.xyz, 1.0);
+
+	OutNormal = normalize(vec3(viewMatrix * modelMatrix * vec4(VertexNormal.xyz, 0.0)));
+	OutTexCoord = VertexTexCoord.xy;
 }
 #endif
 
@@ -32,7 +30,7 @@ void main()
 #endif
 
 #ifdef FRAGMENT_SHADER
-#version 330
+#version 400
 
 layout (std140) uniform Material 
 {
@@ -46,48 +44,22 @@ layout (std140) uniform Material
 	float shininess;
 };
 
-uniform	sampler2D texUnit;
+uniform sampler2D diffuseTex;
 
-in vec2 TexCoord;
-in vec3 Normal;
+in vec3 OutNormal;
+in vec2 OutTexCoord;
+
 out vec4 outputColor;
 
 void main()
 {
-	outputColor = vec4(1.0f, 0.0f, 1.0f, 1.0f) * vec4(Normal, 1.0f);
+	//vec4 zeroVec = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+
+	outputColor = texture2D(diffuseTex, OutTexCoord) + vec4(OutNormal, 0.0f);
+
+	if(0.95f > outputColor.a)
+	{
+		discard;
+	}
 }
 #endif
-
-/*
-#version 330
- 
-
-
- 
-in vec3 Normal;
-in vec2 TexCoord;
-out vec4 output;
- 
-void main()
-{
-vec4 color;
-vec4 amb;
-float intensity;
-vec3 lightDir;
-vec3 n;
-lightDir = normalize(vec3(1.0,1.0,1.0));
-n = normalize(Normal);	
-intensity = max(dot(lightDir,n),0.0);
-if (texCount == 0) {
-color = diffuse;
-amb = ambient;
-}
-else {
-color = texture2D(texUnit, TexCoord);
-amb = color * 0.33;
-}
-output = (color * intensity) + amb;
-//output = vec4(texCount,0.0,0.0,1.0);
- 
-}
-*/

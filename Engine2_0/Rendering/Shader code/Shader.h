@@ -11,7 +11,11 @@ public:
 	virtual ~Shader();
 
 	void Enable() { glUseProgram(programID); }
-	void Disable() { glUseProgram(0); }
+	void Disable() 
+	{ 
+		ResetState();
+		glUseProgram(0); 
+	}
 
 	virtual bool Initialize() = 0;
 
@@ -22,6 +26,9 @@ protected:
 		COMPILE_GEOMETRY_SHADER = 2,
 		COMPILE_FRAGMENT_SHADER = 4
 	};
+
+	//Function that each shader can overload if it wants to.
+	virtual void ResetState();
 
 	bool LoadShader(std::string fileName, unsigned char compileFlags);
 	std::string GetBaseFilepath();

@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "Core systems/EngineCore.h"
 
 #include <easylogging++.h>
@@ -19,9 +20,16 @@ int main(int argc, char* argv[])
 		else
 		{
 			//If we're reached this point, engine has finished running through either a crash or some form of catastrophic failure that it was unable to recover from.
+
+			//First we call shutdown to get rid of the window that is in the way
+			engine.Shutdown();
+
+			//And, because we actually crashed with a false, we want to get the info from the error log console that usually prints something interesting
+			#ifdef DEBUG
+				std::cin.ignore().get();
+			#endif
 		}
 	}
-
 
 	return 0;
 }

@@ -31,19 +31,21 @@ bool GameRenderer::Initialize(MaterialHandler* mtlHandlerPtr, MeshHandler* meshH
 	glViewport(0, 0, screenWidth, screenHeight);
 	glClearColor(0.4f, 0.4f, 0.5f, 1.0f);
 
-	glm::vec3 camPos = glm::vec3(50.0f, 50.0f, 50.0f);
-	glm::vec3 treePos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 camPos(0.0f, 25.0f, -40.0f);
+	glm::vec3 treePos(0.0f, 0.0f, 0.0f);
+	glm::vec3 targetOffset(0.0f, 1.0f, 0.0f);
+	glm::vec3 scalingVector(0.7f);
 
-	wvpMatrixStruct.projMatrix = glm::perspective(glm::radians(45.0f), ratio, 0.1f, 200.f);
+	scaleMatrix = glm::scale(glm::mat4(), scalingVector);
+
+	wvpMatrixStruct.projMatrix = glm::perspective(45.0f, ratio, 1.0f, 300.0f);
 	wvpMatrixStruct.modelMatrix = glm::translate(glm::mat4(), treePos);
 	wvpMatrixStruct.viewMatrix = glm::lookAt(	
 		camPos,
-		treePos,
-		glm::vec3(	0.0f, 0.0f, 1.0f	)
+		treePos+targetOffset,
+		glm::vec3(0.0f, 1.0f, 0.0f)
 		);
 
-
-	scaleMatrix = glm::scale(glm::mat4(), glm::vec3(0.1f, 0.1f, 0.1f));
 
 	glGenBuffers(1, &matrixUBO);
 	glBindBuffer(GL_UNIFORM_BUFFER, matrixUBO);
@@ -82,16 +84,8 @@ void GameRenderer::Update(double deltaTime)
 
 	rotation += deltaTime;
 
-	//Updating view matrix to rotate...
-	glm::mat4 rotMatrix
-		(
-		cos(rotation),		0.0f,	sin(rotation),		1.0f,
-		0.0f,				1.0f,	0.0f,				1.0f,
-		-sin(rotation),		0.0f,	cos(rotation),		1.0f,
-		0.0f,				0.0f,	0.0f,				1.0f
-		);
-
-	glm::mat4x4 world = wvpMatrixStruct.modelMatrix * rotMatrix * scaleMatrix;
+	glm::mat4x4 world = wvpMatrixStruct.modelMatrix * scaleMatrix;// wvpMatrixStruct.modelMatrix * rotMatrix * scaleMatrix;
+	world = glm::rotate(world, (glm::mediump_float)rotation*100.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	glBindBuffer(GL_UNIFORM_BUFFER, matrixUBO);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0,						sizeof(glm::mat4),		glm::value_ptr(world));
@@ -102,7 +96,11 @@ void GameRenderer::Update(double deltaTime)
 
 void GameRenderer::Render(Scene* scene)
 {
+	//I honestly don't fully know which are needed right now, I add and remove different flags to try and solve problems sometime
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_CULL_FACE);
 
 	//This is where we render.
@@ -110,11 +108,14 @@ void GameRenderer::Render(Scene* scene)
 	{
 		renderPasses[i](scene);
 	}
+
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
 }
 
 void GameRenderer::SetupRenderPasses()
 {
-	//So this might look weird. We store each render pass as a simple std::function
+	//So this might look weird. We store each render pass as a std::function
 	std::function<void(Scene*)> objRenderPass
 		(
 		//Copy construct from a lambda
@@ -123,13 +124,14 @@ void GameRenderer::SetupRenderPasses()
 		objShader->Enable();
 		objShader->BindBuffers(matrixUBO, 0);
 
-		
-		Texture* currentTexture = nullptr;
-		MaterialStruct* currentMaterial = nullptr;
-		GLuint currentTextureKey = 0;
-		GLuint currentMaterialKey = 0;
+		//Temporary containers...
+		Texture currentTexture;
+		MaterialStruct currentMaterial;
+		FWHandle currentTextureKey = -1;
+		FWHandle currentMaterialKey = -1;
 		auto& renderables = scene->renderables;
 
+		//For each mesh...
 		for(unsigned int renderableIndex = 0; renderableIndex < renderables.size(); ++renderableIndex) 
 		{
 			auto& mesh = meshHandler->GetMesh(renderables[renderableIndex].meshHandle);
@@ -139,38 +141,42 @@ void GameRenderer::SetupRenderPasses()
 			! Update transform based on each model instance !?
 			*/
 
-			/*
-			auto texKey = GetKey(meshes[j].textureIndex);
-			if(currentTexture != texKey)
-			{
-			currentTexture = texKey;
-			////Change texture.
-			//glActiveTexture(GL_TEXTURE0);
-			//int texture_location = glGetUniformLocation(fs, "color_texture");
-			//glUniform1i(texture_location, 0);
-			//glBindTexture(GL_TEXTURE_2D, texture[0]);
-
-			}
-
-			auto matKey = GetKey(meshes[j].materialIndex);
-			if(currentMaterial != matKey)
-			{
-			currentMaterial = matKey;
-			//Change material.
-			}
-			*/
-
 			glBindVertexArray(mesh.vao);
 
+			//For each submesh...
 			for(unsigned int submeshIndex = 0; submeshIndex < meshes.size(); ++submeshIndex)
 			{
-				glDrawElementsBaseVertex(GL_TRIANGLES, meshes[submeshIndex].numIndices, GL_UNSIGNED_INT,
-										(void*)(sizeof(GLuint) * meshes[submeshIndex].baseIndex), meshes[submeshIndex].baseVertex);
+				//Get texkey for this submesh
+				FWHandle texKey = meshes[submeshIndex].textureIndex;
+
+				//If it's a different key than the one we have, we change
+				if(currentTextureKey != texKey)
+				{
+					currentTextureKey = texKey;
+
+					if(textureHandler->GetTexture(currentTextureKey, currentTexture))
+					{
+						objShader->BindTextureSlot(currentTexture.GetTextureID());
+					}
+				}
+
+				glDrawElementsBaseVertex
+					(
+					GL_TRIANGLE_STRIP, 
+					meshes[submeshIndex].numIndices, 
+					GL_UNSIGNED_SHORT,
+					(void*)(sizeof(unsigned int) * meshes[submeshIndex].baseIndex), 
+					meshes[submeshIndex].baseVertex
+					);
+				
+				//Unbind slot to reset whatever texture was bound
+				glBindTexture(GL_TEXTURE_2D, 0);	
 			}
 
 			glBindVertexArray(0);
 		}
 
+		objShader->ResetState();
 		objShader->Disable();
 	}
 	);

@@ -4,14 +4,14 @@ Kd 1 1 1
 Ks 0 0 0
 map_Kd wood05.png
 
-newmtl cross03png
-Ka 1 1 1
-Kd 1 1 1
-Ks 0 0 0
-map_Kd cross03.png
-
 newmtl leaf07png
 Ka 1 1 1
 Kd 1 1 1
 Ks 0 0 0
 map_Kd leaf07.png
+
+newmtl cross03png
+Ka 1 1 1
+Kd 1 1 1
+Ks 0 0 0
+map_Kd cross03.png

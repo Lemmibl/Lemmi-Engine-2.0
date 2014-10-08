@@ -34,6 +34,7 @@ private:
 	ModelHandler* modelHandler;
 
 	std::vector<ModelInstance> renderables;
+	std::vector<std::string> modelFilepaths;
 
 	float points[9];
 };

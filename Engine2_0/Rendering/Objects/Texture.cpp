@@ -17,8 +17,9 @@ void Texture::Initialize(GLenum texType, GLuint texID)
 }
 
 
-void Texture::Bind( GLenum textureSlot)
+void Texture::Bind(GLenum textureSlot, GLint shaderTextureIndex)
 {
 	glActiveTexture(textureSlot);
 	glBindTexture(textureType, textureID);
+	glUniform1i(shaderTextureIndex, textureSlot);
 }

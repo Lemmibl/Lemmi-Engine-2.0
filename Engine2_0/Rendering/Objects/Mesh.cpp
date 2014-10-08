@@ -33,7 +33,7 @@ Mesh::~Mesh()
 
 void Mesh::StoreMesh(const aiScene* scene)
 {
-	std::vector<unsigned int> indices;
+	std::vector<GLushort> indices;
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec2> texCoords;
 	std::vector<glm::vec3> normals;
@@ -44,7 +44,7 @@ void Mesh::StoreMesh(const aiScene* scene)
 	unsigned int numIndices = 0;
 
 	// Count the number of vertices and indices
-	for (unsigned int i = 0 ; i < submeshes.size() ; i++) 
+	for (unsigned int i = 0; i < submeshes.size(); ++i) 
 	{
 		submeshes[i].materialIndex = CreateHandle(HandleTypes::Texture, scene->mMeshes[i]->mMaterialIndex);
 		submeshes[i].numIndices = scene->mMeshes[i]->mNumFaces * 3;
@@ -67,7 +67,7 @@ void Mesh::StoreMesh(const aiScene* scene)
 	{
 		 const aiMesh* paiMesh = scene->mMeshes[i];
 
-		LoadSubMesh(paiMesh, positions, normals, texCoords, indices);
+		LoadSubMesh(0, paiMesh, positions, normals, texCoords, indices);
 	}
 
 	// Create the VAO
@@ -77,57 +77,59 @@ void Mesh::StoreMesh(const aiScene* scene)
 	// Create the buffers for the vertices atttributes
 	glGenBuffers(bufferSize, buffers);
 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[INDEX_BUFFER]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0])*indices.size(), &indices[0], GL_STATIC_DRAW);
+
+
 	// Generate and populate the buffers with vertex attributes and the indices
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[POSITION_BUFFER]);
-	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), (void*)(positions.data()), GL_STATIC_DRAW);
-	glVertexAttribPointer(POSITION_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0L);
-	glEnableVertexAttribArray(POSITION_BUFFER);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(positions[0]) * positions.size(), &positions[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[NORMAL_BUFFER]);
-	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), (void*)(normals.data()),	GL_STATIC_DRAW);
-	glVertexAttribPointer(NORMAL_BUFFER, 3, GL_FLOAT, GL_FALSE, 0, 0L);
-	glEnableVertexAttribArray(NORMAL_BUFFER);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(normals[0]) * normals.size(), &normals[0],	GL_STATIC_DRAW);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffers[TEXCOORD_BUFFER]);
-	glBufferData(GL_ARRAY_BUFFER, texCoords.size() * sizeof(glm::vec2), (void*)(texCoords.data()), GL_STATIC_DRAW);
-	glVertexAttribPointer(TEXCOORD_BUFFER, 2, GL_FLOAT, GL_FALSE, 0, 0L);
-	glEnableVertexAttribArray(TEXCOORD_BUFFER);
-
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[INDEX_BUFFER]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), (void*)(indices.data()), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords[0]) * texCoords.size(), &texCoords[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	glBindVertexArray(0);
 }
 
-void Mesh::LoadSubMesh( const aiMesh* paiMesh, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, std::vector<glm::vec2>& texCoords, std::vector<unsigned int>& indices )
+void Mesh::LoadSubMesh(unsigned int submeshIndex, const aiMesh* paiMesh, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, 
+							std::vector<glm::vec2>& texCoords, std::vector<GLushort>& indices )
 {
 	const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
+	const aiVector3D defaultNormal(0.0f, 1.0f, 0.0f);
 
 	// Populate the vertex attribute vectors
-	for (unsigned int i = 0 ; i < paiMesh->mNumVertices ; i++) 
+	for (unsigned int i = 0; i < paiMesh->mNumVertices; ++i) 
 	{
 		const aiVector3D* pPos = &(paiMesh->mVertices[i]);
-		const aiVector3D* pNormal = &(paiMesh->mNormals[i]);
-		const aiVector3D* pTexCoord = paiMesh->HasTextureCoords(0) ? &(paiMesh->mTextureCoords[0][i]) : &Zero3D;
+		const aiVector3D* pNormal = paiMesh->HasNormals() ? &(paiMesh->mNormals[i]) : &defaultNormal;
+		const aiVector3D* pTexCoord = paiMesh->HasTextureCoords(submeshIndex) ? &(paiMesh->mTextureCoords[submeshIndex][i]) : &Zero3D;
 
 		positions[i]	= glm::vec3(pPos->x, pPos->y, pPos->z);
 		normals[i]		= glm::vec3(pNormal->x, pNormal->y, pNormal->z);
 		texCoords[i]	= glm::vec2(pTexCoord->x, pTexCoord->y);
 	}
 
+	unsigned int subIndex = 0;
+
 	// Populate the index buffer
 	for (unsigned int i = 0; i < paiMesh->mNumFaces; ++i) 
 	{
 		const aiFace& Face = paiMesh->mFaces[i];
 
-		assert(Face.mNumIndices == 3);
-
-		indices[3*i]		= GLuint(Face.mIndices[0]);
-		indices[3*i+1]		= GLuint(Face.mIndices[1]);
-		indices[3*i+2]		= GLuint(Face.mIndices[2]);
+		indices[subIndex++]	= GLushort(Face.mIndices[0]);
+		indices[subIndex++]	= GLushort(Face.mIndices[1]);
+		indices[subIndex++]	= GLushort(Face.mIndices[2]);
 	}
 }
 
