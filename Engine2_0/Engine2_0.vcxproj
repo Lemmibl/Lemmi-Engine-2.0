@@ -100,6 +100,7 @@
     <ClCompile Include="Rendering\Object handlers\TextureHandler.cpp" />
     <ClCompile Include="Rendering\Object handlers\ShaderHandler.cpp" />
     <ClCompile Include="Rendering\Objects\Texture.cpp" />
+    <ClCompile Include="Rendering\Object handlers\TransformHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core systems\Data classes\DODArray.h" />
@@ -107,6 +108,8 @@
     <ClInclude Include="Core systems\Data classes\HandleTypes.h" />
     <ClInclude Include="Data\Shaders\GeneralShader.glsl" />
     <ClInclude Include="Game\Camera.h" />
+    <ClInclude Include="Game\EntityTransform.h" />
+    <ClInclude Include="Game\GenericEntity.h" />
     <ClInclude Include="Libraries\EasyLogging++\easylogging++.h" />
     <ClInclude Include="Rendering\Shader code\OBJShader.h" />
     <ClInclude Include="Rendering\Object handlers\HandlerBaseClass.h" />
@@ -147,6 +150,7 @@
     <ClInclude Include="Rendering\Object handlers\TextureHandler.h" />
     <ClInclude Include="Rendering\Object handlers\ShaderHandler.h" />
     <ClInclude Include="Rendering\Objects\Texture.h" />
+    <ClInclude Include="Rendering\Object handlers\TransformHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shaders\OBJShader.glsl" />

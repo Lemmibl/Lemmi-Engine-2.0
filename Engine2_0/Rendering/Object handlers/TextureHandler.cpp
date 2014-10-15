@@ -68,12 +68,6 @@ bool TextureHandler::LoadTexture( std::string filename, FWHandle& outHandle )
 
 		if(0 != oglTexHandle)
 		{
-			glBindTexture(GL_TEXTURE_2D, oglTexHandle);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
 			Texture newTexture;
 
 			//I need to use initialize function instead of constructor because my container class doesn't handle things with no default constructors

@@ -38,12 +38,12 @@ public:
 
 	std::vector<SubMesh>& GetSubmeshes() { return submeshes; }
 
-	void StoreMesh(const aiScene* scene);
+	void CreateMesh(const aiScene* scene);
 
 
 private:
-	void LoadSubMesh(unsigned int submeshIndex,	const aiMesh* paiMesh, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, 
-						std::vector<glm::vec2>& texCoords, std::vector<GLushort>& indices);
+	void LoadSubMesh(unsigned int dataIndex, const aiMesh* paiMesh, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, 
+	std::vector<glm::vec2>& texCoords, std::vector<GLuint>& indices);
 
 private:
 	static const unsigned int bufferSize = 4;

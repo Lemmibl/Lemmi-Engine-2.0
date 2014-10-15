@@ -1,5 +1,6 @@
 TODO:
-
+* remove transform from Model. remove model completely? modelhandler being a thing?
+* Go over all handlers and make sure they use the same way to access objects. ALSO MAKE SURE THAT YOU CAN ACCESS THE ARRAY.
 * Change shader system to use polyporphism and generic Shader* ptrs. ShaderManager would be a .... std::map<Shader*, shaderEnum> ?
 * Shader* would have a virtual destructor, a pure virtual Render(Scene*) and a pure virtual Setup(Scene*)...?
 * Camera.

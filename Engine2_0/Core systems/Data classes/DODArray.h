@@ -16,10 +16,22 @@ class DODContainer
 	/************************************************************************/
 
 private:
-	struct ContainerObject
+	struct ObjectContainer
 	{
-		unsigned short id;
-		ObjectType data;
+		ObjectContainer(IndexType size)
+		{
+			idArray = new unsigned short[size];
+			dataArray = new ObjectType[size];
+		}
+
+		~ObjectContainer()
+		{
+			delete[] idArray;
+			delete[] dataArray;
+		}
+
+		unsigned short* idArray;
+		ObjectType* dataArray;
 	};
 
 	struct IndexObject
@@ -34,12 +46,12 @@ public:
 	/*                    Constructors and destructors                      */
 	/************************************************************************/
 	DODContainer(IndexType size)
-	: OBJECT_IS_EMPTY(std::numeric_limits<IndexType>::max())
+	:	OBJECT_IS_EMPTY(std::numeric_limits<IndexType>::max()),
+		objectArray(size)
 	{
 		maxObjects = size;
 		activeObjects = 0;
 
-		objectArray = new ContainerObject[maxObjects];
 		indexArray = new IndexObject[maxObjects];
 
 		for(IndexType i = 0; i < maxObjects; ++i)
@@ -54,15 +66,14 @@ public:
 
 	~DODContainer()
 	{
-		delete[] objectArray;
 		delete[] indexArray;
 	}
 
 	/************************************************************************/
 	/*                              Operators                               */
 	/************************************************************************/
-	const ObjectType&	operator[](int i)	const		{ return objectArray[i].data; }
-	ObjectType&			operator[](int i)				{ return objectArray[i].data; }
+	const ObjectType&	operator[](int i)	const		{ return objectArray.dataArray[i]; }
+	ObjectType&			operator[](int i)				{ return objectArray.dataArray[i]; }
 
 	/************************************************************************/
 	/*                          Other functions                             */
@@ -83,12 +94,17 @@ public:
 	}
 
 	//For iteration!
-	ContainerObject* Begin() { return objectArray; }
-	ContainerObject* End() { return objectArray+activeObjects; }
+	ObjectContainer* Begin() { return objectArray.dataArray; }
+	ObjectContainer* End() { return objectArray.dataArray+activeObjects; }
 
 	ObjectType& GetSpecificObject(IndexType handle) 
 	{ 
-		return objectArray[indexArray[handle].index].data; 
+		return objectArray.dataArray[indexArray[handle].index]; 
+	}
+
+	ObjectType* GetObjectArray()
+	{
+		return objectArray.dataArray;
 	}
 
 	//Returns true if we've succeeded in adding the new object
@@ -105,8 +121,7 @@ public:
 			//Assign the right value to our index
 			index.index = activeObjects++;
 
-			ContainerObject& object = objectArray[index.index];
-			object.id = indexID;
+			objectArray.idArray[index.index] = indexID;
 			outHandle = indexID;
 
 			return true;
@@ -123,15 +138,17 @@ public:
 		IndexObject& idx = indexArray[externalHandle];
 
 		//Get a non-const reference to the object
-		ContainerObject& object = objectArray[idx.index];
+		ObjectType& object = objectArray.dataArray[idx.index];
+		IndexType& index = objectArray.idArray[idx.index];
 
 		//And overwrite the object with the currently furthest out object
 		//While at the same time reducing activeObjects count with one.
 		//Essentially we delete and copy in one execution
-		object = objectArray[--activeObjects];
+		object = objectArray.dataArray[activeObjects];
+		index = objectArray.idArray[--activeObjects];
 
 		//Also copy the index value to make sure we aren't screwing up access to the other object (that is now in the slot where the deleted object used to be)
-		indexArray[object.id].index = idx.index;
+		indexArray[index].index = idx.index;
 
 		//And null index to the deleted object
 		idx.index = OBJECT_IS_EMPTY;
@@ -153,5 +170,5 @@ private:
 	IndexType freelist_enqueue, freelist_dequeue;
 
 	IndexObject* indexArray;
-	ContainerObject* objectArray;
+	ObjectContainer objectArray;
 };

@@ -32,7 +32,7 @@ public:
 	GameRenderer();
 	~GameRenderer();
 
-	bool Initialize(MaterialHandler* mtlHandlerPtr, MeshHandler* meshHandlerPtr, TextureHandler* texHandlerPtr);
+	bool Initialize(MaterialHandler* mtlHandlerPtr, MeshHandler* meshHandlerPtr, TextureHandler* texHandlerPtr, TransformHandler* transformHandlerPtr);
 
 	void Update(double deltaTime);
 	void Render(Scene* scene);
@@ -53,6 +53,7 @@ private:
 	MaterialHandler* materialHandler;
 	MeshHandler* meshHandler; 
 	TextureHandler* textureHandler;
+	TransformHandler* transformHandler;
 
 	Matrices wvpMatrixStruct;
 	GLuint matrixStructShaderIndex, matrixBindingIndex, matrixUBO;

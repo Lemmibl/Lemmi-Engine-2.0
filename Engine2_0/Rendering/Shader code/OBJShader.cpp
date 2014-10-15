@@ -9,7 +9,7 @@
 
 OBJShader::OBJShader() : Shader()
 {
-	matrixBindingSlot = 0;
+	viewprojMatrixBindingSlot = 0;
 	materialBindingSlot = 1;
 
 	diffuseTextureBindingSlot = 0;
@@ -56,15 +56,25 @@ void OBJShader::SetupBuffers(GLuint matrixUBO, GLuint materialUBO)
 
 
 	//Matrix setup
-	matrixStructShaderIndex = glGetUniformBlockIndex(programID, "Matrices");
+	modelMatrixShaderIndex = glGetUniformLocation(programID, "modelMatrix");
+	viewprojMatrixShaderIndex = glGetUniformBlockIndex(programID, "Matrices");
 	//glBindBufferRange(GL_UNIFORM_BUFFER, matrixStructShaderIndex, matrixUBO, 0, sizeof(Matrices));
-	glUniformBlockBinding(programID, matrixStructShaderIndex, matrixBindingSlot);
+	glUniformBlockBinding(programID, viewprojMatrixShaderIndex, viewprojMatrixBindingSlot);
 }
 
-void OBJShader::BindBuffers(GLuint matrixUBO, GLuint materialUBO)
+void OBJShader::BindVPMatrixBuffer(GLuint matrixUBO)
 {
-	glBindBufferRange(GL_UNIFORM_BUFFER, matrixBindingSlot, matrixUBO, 0, sizeof(Matrices));
-	//TODO: material
+	glBindBufferRange(GL_UNIFORM_BUFFER, viewprojMatrixBindingSlot, matrixUBO, 0, sizeof(Matrices));
+}
+
+void OBJShader::BindModelMatrix(glm::mat4& matrix)
+{
+	glUniformMatrix4fv(modelMatrixShaderIndex, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void OBJShader::BindMaterialBuffer( GLuint materialUBO )
+{
+
 }
 
 void OBJShader::BindTextureSlot(GLuint textureID)
@@ -78,5 +88,6 @@ void OBJShader::BindTextureSlot(GLuint textureID)
 
 void OBJShader::ResetState()
 {
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindSampler(0, 0); 
 }

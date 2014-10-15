@@ -19,7 +19,7 @@ namespace FlyweightFunctionality
 
 	inline HandleTypes::Type GetType(FWHandle handle)
 	{
-		return std::move(HandleTypes::Type(handle & 0xFF));
+		return (handle & 0xFF);
 	}
 
 	inline unsigned int GetKey(FWHandle handle)

@@ -2,6 +2,9 @@
 
 #include <easylogging++.h>
 #include "../Rendering/Object handlers/ModelHandler.h"
+#include "../Rendering/Object handlers/TransformHandler.h"
+
+#include "GenericEntity.h"
 
 Scene::Scene()
 {
@@ -9,59 +12,55 @@ Scene::Scene()
 
 Scene::~Scene()
 {
+	renderables.clear();
 }
 
-void Scene::Load(ModelHandler* modelHandlerPtr)
+void Scene::Load(ModelHandler* modelHandlerPtr, TransformHandler* transformHandlerPtr)
 {
+	//Need to setup the seed because glm::rand uses C random api
 	modelHandler = modelHandlerPtr;
+	transformHandler = transformHandlerPtr;
 
-	modelFilepaths.push_back("sphere.obj");
-	modelFilepaths.push_back("Eucalyptus.obj");
-	modelFilepaths.push_back("eucalyptus2.obj");
-	modelFilepaths.push_back("eucalyptus3.obj");
-	modelFilepaths.push_back("pineish.obj");
-	modelFilepaths.push_back("bush.obj");
+	//modelNames.push_back("sphere.obj");
+	modelNames.push_back("Eucalyptus.obj");
+	modelNames.push_back("eucalyptus2.obj");
+	modelNames.push_back("eucalyptus3.obj");
+	modelNames.push_back("pineish.obj");
+	modelNames.push_back("bush.obj");
 
-	std::string activeModel = modelFilepaths[1];
+	float x, y, z;
+	FWHandle result = 0;
 
-	for(unsigned int i = 0; i < 10; ++i)
+	for(unsigned int i = 0; i < 25; ++i)
 	{
-		FWHandle modelHandle;
+		//Generate a random position for the object
+		x = RandFloat(-15.0f, 15.0f);
+		y = 0.0f;	   
+		z = RandFloat(-15.0f, 15.0f);
 
-		if(!modelHandler->LoadModel(activeModel, modelHandle))
+		glm::vec3 randomPosition = glm::vec3(x, y, z);
+
+		//Randomly select which model to load
+		unsigned int randomIndex = static_cast<unsigned int>(glm::round(RandFloat(0.0f, static_cast<float>(modelNames.size()-1))));
+		std::string activeModel = modelNames[randomIndex];
+
+		result = modelHandler->CreateModelInstance(activeModel, randomPosition, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f));
+
+		if(result == InvalidHandle)
 		{
 			LOG(ERROR) << ("Couldn't load file " + activeModel + " in modelHandler!");
 		}
 		else
 		{
-			renderables.push_back(modelHandler->GetModel(modelHandle));
+			//Copy model into renderables vector.
+			renderables.push_back(modelHandler->GetModel(result));
 		}
 	}
 
-	points[0] = 0.0f;
-	points[1] = 0.5f;
-	points[2] = 0.0f;
-	points[3] = 0.5f;
-	points[4] = -0.5f;
-	points[5] = 0.0f;
-	points[6] = -0.5f;
-	points[7] = -0.5f;
-	points[8] = 0.0f;
-
-	vertexBufferObject = 0;
-	glGenBuffers(1, &vertexBufferObject);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float)*9, points, GL_STATIC_DRAW);
-
-	vertexAttributeObject = 0;
-	glGenVertexArrays (1, &vertexAttributeObject);
-	glBindVertexArray(vertexAttributeObject);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	std::sort(renderables.begin(), renderables.end(), MeshHandleSort());
 }
 
-void Scene::Update( double deltaTime )
+void Scene::Update(double deltaTime)
 {
 	for(unsigned int i = 0; i < renderables.size(); ++i)
 	{

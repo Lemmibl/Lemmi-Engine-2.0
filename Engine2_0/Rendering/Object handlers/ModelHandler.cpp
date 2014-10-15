@@ -3,20 +3,15 @@
 #include "TextureHandler.h"
 #include "MaterialHandler.h"
 #include "MeshHandler.h"
+#include "TransformHandler.h"
 
 #include <string>
 #include <algorithm> //For ToLower function on string
 
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
-#include <assimp/material.h>
-
 #include <easylogging++.h>
 
 ModelHandler::ModelHandler()
-	: HandlerBaseClass(64),
-	baseFilepath("../Engine2_0/Data/Models/")
+	: HandlerBaseClass(512)
 {
 }
 
@@ -25,120 +20,57 @@ ModelHandler::~ModelHandler()
 {
 }
 
-bool ModelHandler::Initialize(MaterialHandler* mtlHandlerPtr, MeshHandler* meshHandlerPtr, TextureHandler* texHandlerPtr)
+bool ModelHandler::Initialize(MaterialHandler* mtlHandlerPtr, MeshHandler* meshHandlerPtr, TextureHandler* texHandlerPtr, TransformHandler* transformHandlerPtr)
 {
 	materialHandler = mtlHandlerPtr;
 	meshHandler = meshHandlerPtr;
 	textureHandler = texHandlerPtr;
+	transformHandler = transformHandlerPtr;
 
 	return true;
 }
 
-bool ModelHandler::LoadModel(std::string fileName, FWHandle& outHandle)
+FWHandle ModelHandler::CreateModelInstance(std::string meshName, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
-	//Just to enforce uniformity I force all characters to lowercase.
+	//Just to enforce uniformity I make all characters lowercase.
 	//I need uniformity to make sure that string comparisons don't fail because of upper/lowercase inconsistencies.
-	std::transform(fileName.begin(), fileName.end(), fileName.begin(), ::tolower);
+	std::transform(meshName.begin(), meshName.end(), meshName.begin(), ::tolower);
 
-	FWHandle returnHandle;
+	//Potential error returns it's supposed to be an invalid handle.
+	FWHandle returnHandle = HandleTypes::InvalidHandle;
 
-	//If there's a duplicate, return the key to that one instead
-	if(LookForDuplicateObject(fileName, returnHandle))
-	{
-		outHandle = returnHandle;
-		return true;
-	}
+	////If there's a duplicate, return the key to that one instead
+	//if(LookForDuplicateObject(meshName, returnHandle))
+	//{
+	//	//If we go here, we don't return a proper transform
+	//	return returnHandle;
+	//}
+
 
 	unsigned short objectKey = 0;
 
+	//If there's an object slot available
 	if(objectContainer.AddNewObject(objectKey))
 	{
-		//Import model file
-		Assimp::Importer loader;
+		ModelInstance* modelPtr = &objectContainer[objectKey];
 
-		const aiScene* scene = loader.ReadFile((baseFilepath+fileName), aiProcess_Triangulate|aiProcess_FlipUVs); // | aiProcess_GenSmoothNormals | 
-
-		if(scene != nullptr)
+		//Create a mesh and write everything to modelPtr
+		if(SetupMesh(meshName, modelPtr))
 		{
-			////These will be used to cross reference the model's internal mtl/tex handles with the real engine handles for the same. Will probably be deleted at the end.
-			std::vector<std::pair<FWHandle, FWHandle>> textureMaterialPairings(scene->mNumMaterials);
-
-			//Load the mesh and get the handle back...
-			FWHandle meshHandle;
-			if(!meshHandler->LoadMesh(scene, fileName, meshHandle))
-			{
-				LOG(ERROR) << "Could not load mesh by the name of: " + fileName;
-			}
-
-			//We look for textures in each material, as well as loading in material data from each
-			for(unsigned int i = 0; i < scene->mNumMaterials; ++i)
-			{
-				//Worst case scenario: we fail to load materialname. If that happens, we just load the default material and use that.
-				std::string stdMatName("DefaultMaterial");
-
-				//Temp string to hold the value we're fetching
-				aiString tempMatName;
-
-				//Fetch material name
-				aiReturn result = scene->mMaterials[i]->Get(AI_MATKEY_NAME, tempMatName);
-				if(AI_SUCCESS != result)
-				{
-					LOG(ERROR) << "Couldn't fetch material name from file by the name of: " + fileName;
-				}
-				else
-				{
-					//Copy materialname into our std string
-					stdMatName = tempMatName.C_Str();
-				}
-				
-				FWHandle materialHandle;
-				if(!materialHandler->LoadMaterial(scene->mMaterials[i], stdMatName, materialHandle))
-				{
-					LOG(ERROR) << "Could not load material when trying to load file: " + fileName;
-				}
-
-				/*
-				In the future: For each texture, inside each material.
-				*/
-
-				FWHandle textureHandle;
-				if(!textureHandler->LoadTextureAssimp(scene->mMaterials[i], fileName, 0, textureHandle))
-				{
-					LOG(ERROR) << "Could not load texture when trying to load file: " + fileName;
-				}
-
-				textureMaterialPairings[i] = std::make_pair<FWHandle, FWHandle>(textureHandle, materialHandle);
-			}
-
-			//Match mesh material ids with flyweight handles
-			auto& submeshes = meshHandler->GetMesh(meshHandle);
-
-			//For each submesh, we need to update the material index to reflect reality
-			for(unsigned int i = 0; i < submeshes.GetSubmeshes().size(); ++i)
-			{
-				//Fetch the local cross referencing index the mesh format uses to keep track of its' materials
-				unsigned int localIndex = GetKey(submeshes.GetSubmeshes()[i].materialIndex);
-
-				//And update the index to reflect the handle values that we use
-				submeshes.GetSubmeshes()[i].textureIndex = textureMaterialPairings[localIndex].first;
-				submeshes.GetSubmeshes()[i].materialIndex = textureMaterialPairings[localIndex].second;
-			}
-
-
-			//Save away the data
-			objectContainer[objectKey].meshHandle = meshHandle;
-
 			returnHandle = CreateHandle(HandleTypes::Model, objectKey);
 
-			//Make sure we remember that we've loaded this model so that we don't load the same file several times
-			InsertNewPair(fileName, returnHandle);
+			//Don't need this, each model will have a unique transform
+			////Make sure we remember that we've loaded this model so that we don't load the same file several times
+			//InsertNewPair(meshName, returnHandle);
+		
+			//Create a transform and write the key to modelPtr
+			SetupTransform(position, rotation, scale, modelPtr);
 
-			outHandle = returnHandle;
+			return returnHandle;
 		}
 		else
 		{
-			LOG(ERROR) << "Couldn't load model file by the name of: " + fileName;
-			return false;
+			LOG(ERROR) << "Couldn't setup model mesh.";
 		}
 	}
 	else
@@ -146,10 +78,28 @@ bool ModelHandler::LoadModel(std::string fileName, FWHandle& outHandle)
 		LOG(ERROR) << "Couldn't load model: no more room in model container.";
 	}
 
-	return true;
+	return returnHandle;
 }
 
 ModelInstance& ModelHandler::GetModel(FWHandle handle)
 {
 	return objectContainer[FlyweightFunctionality::GetKey(handle)];
+}
+
+bool ModelHandler::SetupMesh(std::string meshName, ModelInstance* outModel)
+{
+	//Load the mesh and get the handle back...
+	FWHandle meshHandle;
+	if(!meshHandler->LoadOBJMesh(materialHandler, textureHandler, meshName, outModel->meshHandle))
+	{
+		LOG(ERROR) << "Could not load mesh by the name of: " + meshName;
+		return false;
+	}
+
+	return true;
+}
+
+void ModelHandler::SetupTransform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, ModelInstance* outModel)
+{
+	outModel->transformHandle = transformHandler->CreateTransform(position, rotation, scale);
 }

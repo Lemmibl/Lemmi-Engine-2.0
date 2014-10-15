@@ -31,9 +31,9 @@ Mesh::~Mesh()
 	submeshes.clear();
 }
 
-void Mesh::StoreMesh(const aiScene* scene)
+void Mesh::CreateMesh(const aiScene* scene)
 {
-	std::vector<GLushort> indices;
+	std::vector<GLuint> indices;
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec2> texCoords;
 	std::vector<glm::vec3> normals;
@@ -62,16 +62,21 @@ void Mesh::StoreMesh(const aiScene* scene)
 	texCoords.resize(numVertices);
 
 
+	unsigned int dataIndex = 0;
+
 	//Fill it up with submeshes
 	for(unsigned int i = 0; i < submeshes.size(); ++i) 
 	{
 		 const aiMesh* paiMesh = scene->mMeshes[i];
 
-		LoadSubMesh(0, paiMesh, positions, normals, texCoords, indices);
+		LoadSubMesh(dataIndex, paiMesh, positions, normals, texCoords, indices);
+
+		dataIndex += paiMesh->mNumVertices;
 	}
 
 	// Create the VAO
 	glGenVertexArrays(1, &vao);
+	
 	glBindVertexArray(vao);
 
 	// Create the buffers for the vertices atttributes
@@ -99,11 +104,29 @@ void Mesh::StoreMesh(const aiScene* scene)
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
+	//TODO: Try this?
+	/*
+	// Create the VAO
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindVertexArray(0);
+	*/
+
 	glBindVertexArray(0);
 }
 
-void Mesh::LoadSubMesh(unsigned int submeshIndex, const aiMesh* paiMesh, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, 
-							std::vector<glm::vec2>& texCoords, std::vector<GLushort>& indices )
+void Mesh::LoadSubMesh( unsigned int dataIndex, const aiMesh* paiMesh, std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, 
+		std::vector<glm::vec2>& texCoords, std::vector<GLuint>& indices )
 {
 	const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 	const aiVector3D defaultNormal(0.0f, 1.0f, 0.0f);
@@ -111,25 +134,25 @@ void Mesh::LoadSubMesh(unsigned int submeshIndex, const aiMesh* paiMesh, std::ve
 	// Populate the vertex attribute vectors
 	for (unsigned int i = 0; i < paiMesh->mNumVertices; ++i) 
 	{
-		const aiVector3D* pPos = &(paiMesh->mVertices[i]);
-		const aiVector3D* pNormal = paiMesh->HasNormals() ? &(paiMesh->mNormals[i]) : &defaultNormal;
-		const aiVector3D* pTexCoord = paiMesh->HasTextureCoords(submeshIndex) ? &(paiMesh->mTextureCoords[submeshIndex][i]) : &Zero3D;
+		const aiVector3D* pPos =				&(paiMesh->mVertices[i]);
+		const aiVector3D* pNormal =				paiMesh->HasNormals() ? &(paiMesh->mNormals[i]) : &defaultNormal;
+		const aiVector3D* pTexCoord =			paiMesh->HasTextureCoords(0) ? &(paiMesh->mTextureCoords[0][i]) : &Zero3D;
 
-		positions[i]	= glm::vec3(pPos->x, pPos->y, pPos->z);
-		normals[i]		= glm::vec3(pNormal->x, pNormal->y, pNormal->z);
-		texCoords[i]	= glm::vec2(pTexCoord->x, pTexCoord->y);
+		positions[dataIndex+i]	=		std::move(glm::vec3(pPos->x, pPos->y, pPos->z));
+		normals[dataIndex+i]	=		std::move(glm::vec3(pNormal->x, pNormal->y, pNormal->z));
+		texCoords[dataIndex+i]	=		std::move(glm::vec2(pTexCoord->x, pTexCoord->y));
 	}
 
-	unsigned int subIndex = 0;
+	unsigned int subIndex = dataIndex;
 
 	// Populate the index buffer
 	for (unsigned int i = 0; i < paiMesh->mNumFaces; ++i) 
 	{
 		const aiFace& Face = paiMesh->mFaces[i];
 
-		indices[subIndex++]	= GLushort(Face.mIndices[0]);
-		indices[subIndex++]	= GLushort(Face.mIndices[1]);
-		indices[subIndex++]	= GLushort(Face.mIndices[2]);
+		indices[subIndex++]	= GLuint(Face.mIndices[0]);
+		indices[subIndex++]	= GLuint(Face.mIndices[1]);
+		indices[subIndex++]	= GLuint(Face.mIndices[2]);
 	}
 }
 

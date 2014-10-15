@@ -50,6 +50,10 @@ void EngineCore::InitializeErrorLogger()
 	easyloggingpp::Configurations confFromFile("../Engine2_0/Libraries/EasyLogging++/configFile.conf");  // Load configuration from file
 	easyloggingpp::Loggers::reconfigureAllLoggers(confFromFile); // Re-configures all the loggers to current configuration file
 	easyloggingpp::Loggers::setDefaultConfigurations(confFromFile, true);
+
+	//4 loggers, apparently
+	//std::vector<std::string> listOfIds;
+	//easyloggingpp::Loggers::getAllLogIdentifiers(listOfIds);
 }
 
 

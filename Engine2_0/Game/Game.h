@@ -7,6 +7,7 @@
 #include "../Rendering/Object handlers/MeshHandler.h"
 #include "../Rendering/Object handlers/TextureHandler.h"
 #include "../Rendering/Object handlers/ModelHandler.h"
+#include "../Rendering/Object handlers/TransformHandler.h"
 
 class Game
 {
@@ -32,5 +33,6 @@ private:
 	MaterialHandler materialHandler;
 	MeshHandler meshHandler;
 	TextureHandler textureHandler;
+	TransformHandler transformHandler;
 };
 

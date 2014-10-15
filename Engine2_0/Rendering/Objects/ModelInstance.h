@@ -10,9 +10,6 @@ using namespace FlyweightFunctionality;
 
 struct ModelInstance
 {
-	//Each submesh contains a mat & tex handle
-	FWHandle meshHandle;
-
-	//Actual transform for this mode.
 	FWHandle transformHandle;
+	FWHandle meshHandle;
 };

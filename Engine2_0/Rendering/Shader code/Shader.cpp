@@ -5,8 +5,13 @@
 #include <string>
 #include <vector>
 
+//Observe that these are opengl enums, and as such aren't 0, 1, 2 etc by value
 static const GLenum shaderTypeEnums[3] = { GL_VERTEX_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER };
+
+//Strings that we match against to find the right section of code that we want to use
 static const std::string shaderTypeDefines[3] = { "#define VERTEX_SHADER\n", "#define GEOMETRY_SHADER\n", "#define FRAGMENT_SHADER\n" };
+
+//Where all the shader files should be located
 static const std::string baseFilePath = "../Engine2_0/Data/Shaders/";
 
 Shader::Shader()						  
@@ -19,6 +24,7 @@ Shader::~Shader()
 
 void Shader::ResetState()
 {
+	//By default empty, but it's virtual so can be overloaded by any derived class if functionality is needed
 }
 
 //http://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/
@@ -35,7 +41,7 @@ bool Shader::LoadShader(std::string fileName, unsigned char compileFlags)
 		shaderStream.close();
 
 		//Break if something went wrong...
-		if(shaderCode.length() == 0)
+		if(0 == shaderCode.length())
 		{
 			return false;
 		}
@@ -43,7 +49,7 @@ bool Shader::LoadShader(std::string fileName, unsigned char compileFlags)
 		// Link the program
 		programID = glCreateProgram();
 
-		if(programID == 0)
+		if(0 == programID)
 		{
 			return false;
 		}
@@ -53,6 +59,7 @@ bool Shader::LoadShader(std::string fileName, unsigned char compileFlags)
 
 		//Alright, so we're doing 1 -> 2 -> 4 to bitwise test against the flags.
 		//This way I don't need to make different functions and a bunch of really specific if checks to see if I have a geometry shader or not etc
+		//binary increase: 1 -> 2 -> 4
 		for(unsigned char i = 1; i <= 4; i *= 2)
 		{
 			//So comparing against compile flags means that first loop through == Vertex,
@@ -77,16 +84,16 @@ bool Shader::LoadShader(std::string fileName, unsigned char compileFlags)
 		//Finally link everything
 		glLinkProgram(programID);
 
-		//Vars to hold results
+		//Vars to hold potential errors
 		GLint result = GL_FALSE;
 		int infoLogLength;
 
-		// Check the program
+		// Check the program for problems
 		glGetProgramiv(programID, GL_LINK_STATUS, &result);
 
-		if(result == GL_FALSE)
+		//Output error messages if something went wrong
+		if(GL_FALSE == result)
 		{
-
 			glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &infoLogLength);
 			std::vector<char> programErrorMessage(std::max(infoLogLength, int(1)) );
 			glGetProgramInfoLog(programID, infoLogLength, NULL, &programErrorMessage[0]);
@@ -96,6 +103,7 @@ bool Shader::LoadShader(std::string fileName, unsigned char compileFlags)
 		index = 0;
 
 		//Loop through again and delete any shaders
+		//binary increase: 1 -> 2 -> 4
 		for(unsigned char i = 1; i < 4; i *= 2)
 		{
 			//So comparing against compile flags means that first loop through == Vertex,
@@ -108,13 +116,13 @@ bool Shader::LoadShader(std::string fileName, unsigned char compileFlags)
 			++index;
 		}
 
+		//Output error messages again to see if something went wrong when validating a final time
 		glValidateProgram(programID);
 		glGetProgramiv(programID, GL_VALIDATE_STATUS, &result);
-		if(result == GL_FALSE)
+		if(GL_FALSE == result)
 		{
 			return false;
 		}
-
 	}
 	else
 	{
@@ -129,7 +137,7 @@ GLuint Shader::CreateShader(std::string shader, GLenum type_shader)
 {
 	GLuint shader_id = glCreateShader(type_shader);
 
-	if(shader_id != 0)
+	if(0 != shader_id)
 	{
 		const char* glsl_cstr(shader.c_str());
 
@@ -143,7 +151,7 @@ GLuint Shader::CreateShader(std::string shader, GLenum type_shader)
 		glGetShaderiv(shader_id, GL_COMPILE_STATUS, &result);
 
 		//If compilation went wrong
-		if(result == GL_FALSE)
+		if(GL_FALSE == result)
 		{	
 			int infoLogLength;
 

@@ -19,15 +19,17 @@ bool Game::Shutdown()
 
 bool Game::Initialize()
 {
-	if(!modelHandler.Initialize(&materialHandler, &meshHandler, &textureHandler))
+	if(!modelHandler.Initialize(&materialHandler, &meshHandler, &textureHandler, &transformHandler))
 	{
-		LOG(ERROR) << ("Couldn't initialize modelHandler in Scene.cpp!");
+		LOG(ERROR) << ("Couldn't initialize modelHandler in Scene.cpp");
+		return false;
 	}
 
-	currentScene.Load(&modelHandler);
+	currentScene.Load(&modelHandler, &transformHandler);
 
-	if(!gameRenderer.Initialize(&materialHandler, &meshHandler, &textureHandler))
+	if(!gameRenderer.Initialize(&materialHandler, &meshHandler, &textureHandler, &transformHandler))
 	{
+		LOG(ERROR) << ("Couldn't initialize gameRenderer in Scene.cpp");
 		return false;
 	}
 
@@ -36,6 +38,8 @@ bool Game::Initialize()
 
 bool Game::Update( double deltaTime )
 {
+	transformHandler.Update(deltaTime);
+
 	//Update last
 	gameRenderer.Update(deltaTime);
 	
